@@ -9,9 +9,10 @@ block content
   button#time-down Time Down
   button#set-white Set White
   button#reset reset
-  form
+  form#picForm
     input#camera(type='file' accept='image/*' capture='camera')
-  
+    button#picSubmit(type="submit") Do it!
+  img#myimage
   
   include js.jade
     
@@ -21,7 +22,7 @@ block content
       
       $.getJSON('/color.json',function(data) {
         $('body').css("background-color", "rgb(" + parseInt(data.red) + "," + parseInt(data.green) + "," + parseInt(data.blue) + ")" );
-        console.log(data);
+        //console.log(data);
       });
 
       setTimeout(getColor,1000);
@@ -29,7 +30,7 @@ block content
     
     $(document).ready( function ()  {
       
-      getColor();
+      //getColor();
       
       $('#gain-up').click( function() {
         $.getJSON('/calibrate',{set_gain : "up"}, function(data) { console.log(data) });
@@ -53,4 +54,25 @@ block content
         $.getJSON('/calibrate',{set_white : -1}, function(data) { console.log(data) });
       });     
       
+      function avgLevel( level ) {
+        var total = 0
+        for(var i = 0; i <= 255; i++) {
+          total += level[i] * i;
+        }
+        return total;
+      }
+
+      $("#camera").change(function(evt) {
+          var image = evt.target.files[0];
+          $("#myimage").attr("src", URL.createObjectURL(image));
+             Caman("#myimage", function () {
+               var levels = this.analyze.calculateLevels();
+               var r = avgLevel(levels.r);
+               var g = avgLevel(levels.g);
+               var b = avgLevel(levels.b);
+               
+               $('body').css("background-color", "rgb(" + parseInt(r) + "," + parseInt(g) + "," + parseInt(b) + ")" );
+          });
+      });
+              
     });
