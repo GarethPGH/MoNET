@@ -11,10 +11,10 @@ var users = require('./routes/users');
 var app = express();
 
 //Mongo Stuff
-
+/*
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/nodetest1');
-
+*/
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
