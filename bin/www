@@ -14,7 +14,9 @@ env          = process.env;
  */
 
 var port = normalizePort(env.NODE_PORT || '3000');
+var ip = env.NODE_IP || 'localhost';
 app.set('port', port);
+app.set('ip', ip);
 
 /**
  * Create HTTP server.
@@ -26,7 +28,7 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
+server.listen(port, ip);
 server.on('error', onError);
 server.on('listening', onListening);
 
