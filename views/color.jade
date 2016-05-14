@@ -1,0 +1,56 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+  button#gain-up Gain Up
+  button#gain-down Gain Down
+  button#time-up Time Up
+  button#time-down Time Down
+  button#set-white Set White
+  button#reset reset
+  form
+    input#camera(type='file' accept='image/*' capture='camera')
+  
+  
+  include js.jade
+    
+  script.
+    
+    function getColor() {
+      
+      $.getJSON('/color.json',function(data) {
+        $('body').css("background-color", "rgb(" + parseInt(data.red) + "," + parseInt(data.green) + "," + parseInt(data.blue) + ")" );
+        console.log(data);
+      });
+
+      setTimeout(getColor,1000);
+    }
+    
+    $(document).ready( function ()  {
+      
+      getColor();
+      
+      $('#gain-up').click( function() {
+        $.getJSON('/calibrate',{set_gain : "up"}, function(data) { console.log(data) });
+      });
+      $('#gain-down').click( function() {
+        $.getJSON('/calibrate',{set_gain : "down"}, function(data) { console.log(data) });
+      });
+      $('#time-up').click( function() {
+        $.getJSON('/calibrate',{set_time : "up"}, function(data) { console.log(data) });
+      });
+      
+      $('#time-down').click( function() {
+        $.getJSON('/calibrate',{set_time : "down"}, function(data) { console.log(data) });
+      });   
+      
+      $('#set-white').click( function() {
+        $.getJSON('/calibrate',{set_white : 1}, function(data) { console.log(data) });
+      });    
+      
+      $('#reset').click( function() {
+        $.getJSON('/calibrate',{set_white : -1}, function(data) { console.log(data) });
+      });     
+      
+    });
