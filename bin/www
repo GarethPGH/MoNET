@@ -3,18 +3,18 @@
 /**
  * Module dependencies.
  */
-
+var ip = require("ip");
 var app = require('../app');
 var debug = require('debug')('colortest:server');
 var http = require('http');
-env          = process.env;
+env = process.env;
 
 /**
  * Get port from environment and store in Express.
  */
 
 var port = normalizePort(env.NODE_PORT || '3000');
-var ip = env.NODE_IP || 'localhost';
+var ip = env.NODE_IP || ip.address();
 app.set('port', port);
 app.set('ip', ip);
 

@@ -24,7 +24,15 @@ var calibration = {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('color', { title: 'Express' });
+  res.render('index', { title: 'Project MoNET' });
+});
+
+router.get('/colorwall', function(req, res, next) {
+  res.render('colorwall', { title: 'Project MoNET:Colorwall' });
+});
+
+router.get('/colorwall1', function(req, res, next) {
+  res.render('colorwall1', { title: 'Project MoNET:Colorwall' });
 });
 
 router.get('/sample/:red/:green/:blue', function(req, res, next) {

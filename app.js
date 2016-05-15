@@ -4,17 +4,28 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+var sass = require('node-sass-middleware');
+var path = require('path');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
 
 //Mongo Stuff
-/*
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/nodetest1');
-*/
+var connection_string = 'mongodb://localhost/monet';
+// if OPENSHIFT env variables are present, use the available connection info:
+if(process.env.OPENSHIFT_MONGODB_DB_PASSWORD){
+  connection_string = process.env.OPENSHIFT_MONGODB_DB_USERNAME + ":" +
+  process.env.OPENSHIFT_MONGODB_DB_PASSWORD + "@" +
+  process.env.OPENSHIFT_MONGODB_DB_HOST + ':' +
+  process.env.OPENSHIFT_MONGODB_DB_PORT + '/' +
+  process.env.OPENSHIFT_APP_NAME;
+}
+mongoose.connect(connection_string);
+
+
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -25,6 +36,15 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(
+   sass({
+       src: __dirname + '/sass',
+       dest: __dirname + '/public',
+       debug: true,
+       indentedSyntax : true,
+   })
+);
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);

@@ -1,5 +1,86 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  nav.navbar.navbar-default.navbar-fixed-top
+    .container
+      .navbar-header
+        .navbar-brand
+          a(href="#")
+            img#nav-logo(src="images/hero_logo.png")
+      #navbar.navbar-collapse.collapse
+        ul.nav.navbar-nav
+          li 
+            a(href="#about") About
+          li 
+            a(href="#how-target") How?
+          li
+            a(href="#color-wall-target") Color Wall
+          li
+            a(href="#team-target") Team
+          li
+            a(href="#blog") Blog
+          li
+            a(href="#contact") Contact
+
+  .container-fluid
+    #about.row.light-orange
+      .col-md-2
+      .col-md-8.content.hero
+        img(src="images/hero_logo.png")
+        p. 
+          Project MoNET seeks to create a robot/web platform capable of manufacturing semi-abstract art based on environmental stimulus and crowd sourced data.
+          It is set to debut at #[a(href="http://makerfairepittsburgh.com/") Maker Faire Pittsburgh 2016].
+      .col-md-2
+    .row.extralight-orange
+      .col-md-2
+      .col-md-8.content.namesake
+          p.
+            Project MoNet is named after #[a(href="https://en.wikipedia.org/wiki/Claude_Monet") Claude Monet], father of French Impressionism and celebrated beard enthusiast.
+          img.circle-up(src="images/Claude_Monet.jpg")
+      .col-md-2
+
+    .row.med-orange
+      #how-target
+      .col-md-2
+      .col-md-8.content
+        h1 how it works
+        p.
+          Project MoNET will sample it's environment via a system of color sensors. It will then assemble these samples into an image and paint this to a canvas using a robotic brush.
+        p.
+          As an additional source of inspiration, MoNET will also paint based on aggregate color samples derived from crowd-submitted photographs.
+        p Tech curious? #[a(href="#") Go deeper down the rabbit hole.]
+      .col-md-2
+    #color-wall.row
+      #color-wall-target
+      .col-md-2
+      .col-md-8.content
+        img.header(src="images/colorwall.png")
+        p. 
+          The colorwall is MoNET's early technology demonstrator. It combines colors extracted from user submitted pictures and input from our color sensor network (assuming it&apos;s on)
+          to create a virtual painting. 
+        .text-center
+          a.btn.btn-info.btn-lg.text-center(href="colorwall1") Check it out!
+      .col-md-2
+                
+  include js.jade
+  script.
+
+    $(document).ready(function(){
+
+      // hide .navbar first
+      $(".navbar").hide();
+
+      // fade in .navbar
+      $(function () {
+          $(window).scroll(function () {
+
+                   // set distance user needs to scroll before we start fadeIn
+              if ($(this).scrollTop() > 10) {
+                  $('.navbar').fadeIn();
+              } else {
+                  $('.navbar').fadeOut();
+              }
+          });
+      });
+
+    });
