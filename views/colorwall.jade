@@ -1,0 +1,38 @@
+extends layout
+
+block content
+  //
+    - for (var x = 0; x < 10000; x++)
+      -var r = Math.floor(Math.random() * (256))
+      -var g = Math.floor(Math.random() * (256))
+      -var b = Math.floor(Math.random() * (256))
+      if x % 100 == 0
+        != '<div class="colorbit">'
+        span.colorbit(style="background-color:rgb(#{r},#{g},#{b})") &nbsp;
+      else if (x + 1) % 100 == 0
+        span.colorbit(style="background-color:rgb(#{r},#{g},#{b})") &nbsp;
+        != "</div>"
+      else
+        span.colorbit(style="background-color:rgb(#{r},#{g},#{b})") &nbsp;
+
+  - for (var x = 0; x < 200; x++)
+    -var r = Math.floor(Math.random() * (256))
+    -var g = Math.floor(Math.random() * (256))
+    -var b = Math.floor(Math.random() * (256))
+    if x % 1000 == 0
+      != '<div class="colorbit">'
+      span.colorbit(style="background-color:rgb(#{r},#{g},#{b})") &nbsp;
+    else if (x + 1) % 1000 == 0
+      span.colorbit(style="background-color:rgb(#{r},#{g},#{b})") &nbsp;
+      != "</div>"
+    else
+      span.colorbit(style="background-color:rgb(#{r},#{g},#{b})") &nbsp;
+
+  include js.jade
+
+  script.
+
+    $(document).ready( function () {
+      $('span.colorbit').width($(window).width()/200);
+      $('div.colorbit').height($(window).height());
+    });
