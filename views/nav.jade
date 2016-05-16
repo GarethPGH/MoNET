@@ -1,0 +1,20 @@
+nav.navbar.navbar-default.navbar-fixed-top
+  .container
+    .navbar-header
+      .navbar-brand
+        a(href="#")
+          img#nav-logo(src="images/hero_logo.png")
+    #navbar.navbar-collapse.collapse
+      ul.nav.navbar-nav
+        li 
+          a(href=(route === 'index')? "#about" : "./#about") About
+        li 
+          a(href=(route === 'index')? "#how-target" : "./#how-target") How?
+        li
+          a(href=(route === 'index')? "#color-wall-target": "./#color-wall-target") Color Wall
+        li
+          a(href=(route === 'index')? "#team-target": "./#team-target") Team
+        li
+          a(href=(route === 'index')? "#blog": "./#blog") News
+        li
+          a(href=(route === 'index')? "#contact": "./#contact") Contact
