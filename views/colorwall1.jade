@@ -1,6 +1,7 @@
 extends layout
 
 block content
+  include nav
   - for (var a = 0; a < 5000; a++)
     -var r = Math.floor(Math.random() * (256))
     -var g = Math.floor(Math.random() * (256))

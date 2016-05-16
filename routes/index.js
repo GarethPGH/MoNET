@@ -24,11 +24,11 @@ var calibration = {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Project MoNET' });
+  res.render('index', { title: 'Project MoNET', route : "index" });
 });
 
 router.get('/colorwall', function(req, res, next) {
-  res.render('colorwall', { title: 'Project MoNET:Colorwall' });
+  res.render('colorwall', { title: 'Project MoNET:Colorwall', route : "index" });
 });
 
 router.get('/colorwall1', function(req, res, next) {

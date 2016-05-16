@@ -1,42 +1,35 @@
 extends layout
 
 block content
-  nav.navbar.navbar-default.navbar-fixed-top
-    .container
-      .navbar-header
-        .navbar-brand
-          a(href="#")
-            img#nav-logo(src="images/hero_logo.png")
-      #navbar.navbar-collapse.collapse
-        ul.nav.navbar-nav
-          li 
-            a(href="#about") About
-          li 
-            a(href="#how-target") How?
-          li
-            a(href="#color-wall-target") Color Wall
-          li
-            a(href="#team-target") Team
-          li
-            a(href="#blog") Blog
-          li
-            a(href="#contact") Contact
+  include nav
 
   .container-fluid
     #about.row.light-orange
       .col-md-2
       .col-md-8.content.hero
-        img(src="images/hero_logo.png")
-        p. 
-          Project MoNET seeks to create a robot/web platform capable of manufacturing semi-abstract art based on environmental stimulus and crowd sourced data.
-          It is set to debut at #[a(href="http://makerfairepittsburgh.com/") Maker Faire Pittsburgh 2016].
+        .row
+          .col-md-5
+            img(src="images/hero_logo_head.png")
+          .col-md-7
+            .row
+              .col-md-12
+                img(src="images/hero_logo_words.png")
+            .row
+              .col-md-12
+                p. 
+                  Project MoNET seeks to create a robot/web platform capable of manufacturing semi-abstract art based on environmental stimulus and crowd sourced data.
+                  It is set to debut at #[a(href="http://makerfairepittsburgh.com/") Maker Faire Pittsburgh 2016].
       .col-md-2
-    .row.extralight-orange
+  
+    .row
       .col-md-2
-      .col-md-8.content.namesake
-          p.
-            Project MoNet is named after #[a(href="https://en.wikipedia.org/wiki/Claude_Monet") Claude Monet], father of French Impressionism and celebrated beard enthusiast.
-          img.circle-up(src="images/claude_monet.jpg")
+      .col-md-8.content
+        .row
+          .col-md-8(style= "margin-top: 60px")
+            p.
+              Project MoNet is named after #[a(href="https://en.wikipedia.org/wiki/Claude_Monet") Claude Monet], father of French Impressionism and celebrated beard enthusiast.
+          .col-md-4.text-center
+            img.circle-up(src="images/claude_monet.jpg")
       .col-md-2
 
     .row.med-orange
@@ -50,10 +43,11 @@ block content
           As an additional source of inspiration, MoNET will also paint based on aggregate color samples derived from crowd-submitted photographs.
         p Tech curious? #[a(href="#") Go deeper down the rabbit hole.]
       .col-md-2
+    
     #color-wall.row
       #color-wall-target
       .col-md-2
-      .col-md-8.content
+      .col-md-8.content.colorwall
         img.header(src="images/colorwall.png")
         p. 
           The colorwall is MoNET's early technology demonstrator. It combines colors extracted from user submitted pictures and input from our color sensor network (assuming it&apos;s on)
@@ -61,7 +55,41 @@ block content
         .text-center
           a.btn.btn-info.btn-lg.text-center(href="colorwall1") Check it out!
       .col-md-2
-                
+
+    #team.row
+      #team-target
+      .col-md-2
+      .col-md-8.content
+        h1 the team
+        .row
+          .col-md-6
+            .text-center.image
+              img.circle-up(src="images/claude_monet.jpg")
+              h2 Guy Manchester
+            p VHS freegan listicle, readymade normcore quinoa kombucha man bun scenester flannel. Pabst kombucha four loko, swag truffaut health goth aesthetic umami 90's cred quinoa williamsburg chia. Humblebrag four loko bespoke vinyl. Keytar celiac butcher kickstarter direct trade, taxidermy health goth aesthetic hammock yr. Scenester skateboard chicharrones single-origin coffee deep v gochujang.
+            p Helvetica offal echo park cliche quinoa beard. Semiotics seitan banjo, migas taxidermy organic chia man bun crucifix marfa echo park ethical twee. Gluten-free selfies actually skateboard brunch cred. Jean shorts celiac blog chia try-hard actually. Flannel chartreuse tousled dreamcatcher. Mlkshk pug church-key iPhone literally selfies. Selvage slow-carb stumptown, hashtag mixtape green juice helvetica seitan trust fund polaroid.
+          .col-md-6
+            .text-center.image
+              img.circle-up(src="images/claude_monet.jpg")
+              h2 Manny Guystrong              
+            p VHS freegan listicle, readymade normcore quinoa kombucha man bun scenester flannel. Pabst kombucha four loko, swag truffaut health goth aesthetic umami 90's cred quinoa williamsburg chia. Humblebrag four loko bespoke vinyl. Keytar celiac butcher kickstarter direct trade, taxidermy health goth aesthetic hammock yr. Scenester skateboard chicharrones single-origin coffee deep v gochujang.
+            p Helvetica offal echo park cliche quinoa beard. Semiotics seitan banjo, migas taxidermy organic chia man bun crucifix marfa echo park ethical twee. Gluten-free selfies actually skateboard brunch cred. Jean shorts celiac blog chia try-hard actually. Flannel chartreuse tousled dreamcatcher. Mlkshk pug church-key iPhone literally selfies. Selvage slow-carb stumptown, hashtag mixtape green juice helvetica seitan trust fund polaroid.
+      .col-md-2
+      
+    #blog.row.light-orange
+      #blog-target
+      .col-md-2
+      .col-md-8.content
+        h1 latest blog post
+      .col-md-2      
+
+    #contact.row.inverse
+      #blog-target
+      .col-md-2
+      .col-md-8.content
+        h1 put social and code links here
+      .col-md-2     
+                      
   include js.jade
   script.
 

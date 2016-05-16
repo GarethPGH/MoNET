@@ -24,8 +24,6 @@ if(process.env.OPENSHIFT_MONGODB_DB_PASSWORD){
 }
 mongoose.connect(connection_string);
 
-
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
