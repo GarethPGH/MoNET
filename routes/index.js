@@ -1,8 +1,6 @@
 var express = require('express');
 var router = express.Router();
 
-var Sample = require('../models/samples.js');
-
 var color = { red : 255, green : 255, blue: 255 };
 
 var calibration = {
@@ -33,6 +31,10 @@ router.get('/colorwall', function(req, res, next) {
 
 router.get('/colorwall1', function(req, res, next) {
   res.render('colorwall1', { title: 'Project MoNET:Colorwall' });
+});
+
+router.get('/simulator', function(req, res, next) {
+  res.render('simulator', { title: 'Project MoNET:Simulator' });
 });
 
 router.get('/sample/:red/:green/:blue', function(req, res, next) {

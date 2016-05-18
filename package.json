@@ -20,6 +20,6 @@
     "mongoose": "",
     "node-sass-middleware": "",
     "ip":"",
-    "poet":""
+    "socket.io":""
   }
 }

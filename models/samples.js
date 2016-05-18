@@ -5,7 +5,7 @@ var mongoose = require('mongoose')
    ,ObjectId = Schema.ObjectId;
 
 var sampleSchema = new Schema({
-    urlId: ObjectId,
+    sampleId: ObjectId,
     red: {type: String},
     green: {type: String},
     blue: {type: String},

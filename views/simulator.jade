@@ -1,0 +1,35 @@
+extends layout
+
+block content
+  h1 Hi! I simulate color entries being added
+  p Just keep me open and I'll send color samples to the server via web-sockets.
+  p You can see what is being sent in the console.
+
+  
+  include js.jade
+  
+  script(src="/socket.io/socket.io.js")
+    
+  script.
+    
+    var socket = io();
+    
+    function sendColor() {
+      var color = {
+        r : Math.floor(Math.random() * (256)),
+        g : Math.floor(Math.random() * (256)),
+        b : Math.floor(Math.random() * (256))
+      }
+      
+      socket.emit('new color', color);
+      setTimeout(sendColor, 2000);
+    }
+    
+    $(document).ready( function ()  {
+      sendColor();  
+      
+      socket.on('message', function(message) {
+        console.log(message);
+      });
+      
+    });
