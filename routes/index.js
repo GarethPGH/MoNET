@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 
+var Sample = require('../models/models.js').Sample;
+var Job = require('../models/models.js').Job;
+
 var color = { red : 255, green : 255, blue: 255 };
 
 var calibration = {
@@ -30,7 +33,9 @@ router.get('/colorwall', function(req, res, next) {
 });
 
 router.get('/colorwall1', function(req, res, next) {
-  res.render('colorwall1', { title: 'Project MoNET:Colorwall' });
+  var colors = Job.getTopColors( function(colors) {
+    res.render('colorwall1',  {title: 'Project MoNET:Colorwall', colors : colors.reverse()  });
+  });
 });
 
 router.get('/simulator', function(req, res, next) {

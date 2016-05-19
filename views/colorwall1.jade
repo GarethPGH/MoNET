@@ -2,24 +2,25 @@ extends layout
 
 block content
   include nav
-  - for (var a = 0; a < 5000; a++)
-    -var r = Math.floor(Math.random() * (256))
-    -var g = Math.floor(Math.random() * (256))
-    -var b = Math.floor(Math.random() * (256))
-    -var x = Math.floor(Math.random() * (2000))
-    -var y = Math.floor(Math.random() * (1000))
-    -var w = 50 || Math.floor(Math.random() * (50 - 5) + 5)
-    -var l = 50 || Math.floor(Math.random() * (100 - 10) + 20)
-    div.colorsplotch(style="background-color:rgb(#{r},#{g},#{b}); width:#{w}px; height:#{l}px; left:#{x}px; top:#{y}px;") &nbsp;
+  each entry in colors
+    div.colorsplotch(style="background-color:rgb(#{entry.red},#{entry.green},#{entry.blue}); width:50px; height:50px; left:#{entry.x}px; top:#{entry.y}px;") &nbsp;
 
   include js.jade
 
+  script(src="/socket.io/socket.io.js")
+
   script.
-    /*
-    $(document).ready( function () {
-      $('div.colorsplotch').each(function () {
-          $(this).css('left', $(this).position().left/100 * ($(window).width()));
-          $(this).css('top', $(this).position().top/100 * ($(window).height()));
-        });
+    
+    var socket = io();
+    
+    $(document).ready( function ()  {
+      
+      socket.on('message', function(message) {
+        var color = message.data;
+        $('body').append(
+          '<div class="colorsplotch" style="background-color:rgb(' + color.r + ',' + color.g + ',' + color.b + '); width:50px; height:50px; left:' + color.x + 'px; top:' + color.y + 'px;"> &nbsp</div>'
+        )
+        console.log(color);
+      });
+      
     });
-    */

@@ -12,13 +12,15 @@ block content
     
   script.
     
-    var socket = io();
+    var socket = io.connect();
     
     function sendColor() {
       var color = {
         r : Math.floor(Math.random() * (256)),
         g : Math.floor(Math.random() * (256)),
-        b : Math.floor(Math.random() * (256))
+        b : Math.floor(Math.random() * (256)),
+        x : Math.floor(Math.random() * (2000)),
+        y : Math.floor(Math.random() * (1000))
       }
       
       socket.emit('new color', color);
