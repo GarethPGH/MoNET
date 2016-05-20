@@ -21,5 +21,5 @@
     "node-sass-middleware": "",
     "ip":"",
     "socket.io":""
-  }
+    }
 }
