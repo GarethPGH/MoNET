@@ -15,8 +15,8 @@ var socketIO = require('../sockets');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(env.NODE_PORT || env.OPESHIFT_NODE_PORT || '3000');
-var ip = env.NODE_IP || env.OPESHIFT_NODE_IP || ip.address() || 'localhost';
+var port = normalizePort(env.NODE_PORT || env.OPENSHIFT_NODEJS_PORT || '3000');
+var ip = env.NODE_IP || env.OPENSHIFT_NODEJS_IP || ip.address() || 'localhost';
 app.set('port', port);
 app.set('ip', ip);
 
