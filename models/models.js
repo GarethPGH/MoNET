@@ -77,6 +77,7 @@ jobSchema.statics.getTopColors = function(cb) {
     cb(job.samples.reverse());
   });
 
+
 }
 
 
