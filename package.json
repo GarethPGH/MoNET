@@ -25,6 +25,6 @@
     "node-sass-middleware": "",
     "ip": "",
     "socket.io": "",
-    "rssparser": ""
+    "parse-rss": ""
   }
 }
