@@ -81,8 +81,9 @@ block content
         #blog-target
         .col-md-2
         .col-md-8.content
-          h1 latest blog post
-          p.blogcontent !{latest.summary} <a href="#{latest.url}"> ... read more</a>
+          h2 latest blog post
+          h1= latest.title
+          p.blogcontent #{latest.summary} <a href="#{latest.url}"> ... read more</a>
           p.smaller Posted by #{latest.author} #{latest.time_ago} in the <a href="http://blog.projectmo.net">Project MoNET Blog</a>
         .col-md-2      
 
