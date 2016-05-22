@@ -28,7 +28,6 @@ var calibration = {
 router.get('/', function(req, res, next) {
   parser('http://blog.projectmo.net/rss', function(err, out){
     if (err) throw err;
-    
     var latest = out[0];
     latest.summary = latest.summary.replace(/<(?:.|\n)*?>/gm, '').slice(0,-1);
     res.render('index', { title: 'Project MoNET', route : "index", latest : latest });
