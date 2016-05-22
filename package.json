@@ -24,6 +24,7 @@
     "mongoose": "",
     "node-sass-middleware": "",
     "ip": "",
-    "socket.io": ""
+    "socket.io": "",
+    "rssparser": ""
   }
 }

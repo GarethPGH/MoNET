@@ -76,12 +76,15 @@ block content
             p Helvetica offal echo park cliche quinoa beard. Semiotics seitan banjo, migas taxidermy organic chia man bun crucifix marfa echo park ethical twee. Gluten-free selfies actually skateboard brunch cred. Jean shorts celiac blog chia try-hard actually. Flannel chartreuse tousled dreamcatcher. Mlkshk pug church-key iPhone literally selfies. Selvage slow-carb stumptown, hashtag mixtape green juice helvetica seitan trust fund polaroid.
       .col-md-2
       
-    #blog.row.light-orange
-      #blog-target
-      .col-md-2
-      .col-md-8.content
-        h1 latest blog post
-      .col-md-2      
+    if latest  
+      #blog.row.light-orange
+        #blog-target
+        .col-md-2
+        .col-md-8.content
+          h1 latest blog post
+          p.blogcontent !{latest.summary} <a href="#{latest.url}"> ... read more</a>
+          p.smaller Posted by #{latest.author} #{latest.time_ago} in the <a href="http://blog.projectmo.net">Project MoNET Blog</a>
+        .col-md-2      
 
     #contact.row.inverse
       #social-target
