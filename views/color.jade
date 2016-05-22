@@ -1,58 +1,38 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
-  button#gain-up Gain Up
-  button#gain-down Gain Down
-  button#time-up Time Up
-  button#time-down Time Down
-  button#set-white Set White
-  button#reset reset
-  form#picForm
-    input#camera(type='file' accept='image/*' capture='camera')
-    button#picSubmit(type="submit") Do it!
-  img#myimage(data-caman-hidpi-disabled='true')
-  
-  include js.jade
-    
-  script.
-    
-    function getColor() {
-      
-      $.getJSON('/color.json',function(data) {
-        $('body').css("background-color", "rgb(" + parseInt(data.red) + "," + parseInt(data.green) + "," + parseInt(data.blue) + ")" );
-        //console.log(data);
-      });
+  .site-wrapper
+    .site-wrapper-inner
+      .cover-container
+        .inner.cover.text-center
+          h2#message.normal This page is really boring. Take or select a picture to extract its color!
+          p#add-cell.normal(style="display:none")
+            button#add.btn.btn-warning.btn-lg.normal Add it to the wall!
+          label#file.btn.btn-lg.btn-file.btn-info.normal
+            span Get a color
+            input.btn.btn-default#camera(type='file' accept='image/*' capture='camera' style="display:none")
+          .caman
+            img#img1(data-caman-hidpi-disabled='true' style="display: none")
+            img#img2(data-caman-hidpi-disabled='true' style="display: none")
+            img#img3(data-caman-hidpi-disabled='true' style="display: none")
+            img#img4(data-caman-hidpi-disabled='true' style="display: none")
+            img#img5(data-caman-hidpi-disabled='true' style="display: none")
+          h2.limit(style="display:none") Because of some hacky stuff we had to do to make this work, the page requires a reset before you can sample another picture. Sorry :(
+          p.limit(style="display:none")
+            button#reload.btn.btn-danger.btn-lg Reset            
 
-      setTimeout(getColor,1000);
-    }
-    
+
+  include js.jade
+  script(src="http://cdnjs.cloudflare.com/ajax/libs/camanjs/4.0.0/caman.full.min.js")
+  script(src="/socket.io/socket.io.js")
+
+  script.
+
+    var socket = io();
+
+
     $(document).ready( function ()  {
-      
-      //getColor();
-      
-      $('#gain-up').click( function() {
-        $.getJSON('/calibrate',{set_gain : "up"}, function(data) { console.log(data) });
-      });
-      $('#gain-down').click( function() {
-        $.getJSON('/calibrate',{set_gain : "down"}, function(data) { console.log(data) });
-      });
-      $('#time-up').click( function() {
-        $.getJSON('/calibrate',{set_time : "up"}, function(data) { console.log(data) });
-      });
-      
-      $('#time-down').click( function() {
-        $.getJSON('/calibrate',{set_time : "down"}, function(data) { console.log(data) });
-      });   
-      
-      $('#set-white').click( function() {
-        $.getJSON('/calibrate',{set_white : 1}, function(data) { console.log(data) });
-      });    
-      
-      $('#reset').click( function() {
-        $.getJSON('/calibrate',{set_white : -1}, function(data) { console.log(data) });
-      });     
+
       
       function avgLevel( level ) {
         var total = 0
@@ -61,18 +41,57 @@ block content
         }
         return total;
       }
+      
+      var color = {};
 
       $("#camera").change(function(evt) {
+          $('#file').removeClass('btn-info').addClass('btn-danger');
+          $('#file span').html('Processing ...');
           var image = evt.target.files[0];
-          $("#myimage").attr("src", URL.createObjectURL(image));
-             Caman("#myimage", function () {
-               var levels = this.analyze.calculateLevels();
-               var r = avgLevel(levels.r);
-               var g = avgLevel(levels.g);
-               var b = avgLevel(levels.b);
-               
-               $('body').css("background-color", "rgb(" + parseInt(r) + "," + parseInt(g) + "," + parseInt(b) + ")" );
-          });
+
+          $("img:first-of-type").attr("src", URL.createObjectURL(image));
+            Caman("img:first-of-type", function () {
+                var levels = this.analyze.calculateLevels();
+                var r = parseInt(avgLevel(levels.r));
+                var g = parseInt(avgLevel(levels.g));
+                var b = parseInt(avgLevel(levels.b));
+                
+                color = {source : 'camera',
+                   r: r, g: g, b: b,
+                  
+                  x : Math.floor(Math.random() * (2000)),
+                  y : Math.floor(Math.random() * (1000))
+                };
+                
+                $('body').css("background-color", "rgb(" + parseInt(r) + "," + parseInt(g) + "," + parseInt(b) + ")" );
+                //$("#myimage").removeAttr("src");
+                //$("#myimage").removeAttr("data-caman-id");
+                $('#camera').val("");
+                if($("img:first-of-type").length) { 
+                  $("canvas:first-of-type").remove();
+                } else {
+                  $('.normal').hide();
+                  $('.limit').show();
+                }
+                
+                $('#message').html("Great! If you like your color, add it to the wall. If not choose or take a new picture.")
+                $('#add-cell').show();
+                $('#file').removeClass('btn-danger').addClass('btn-info');
+                $('#file span').html('Get a better color!');
+              }); 
+              //$(".caman").append('<img id="myimage" data-caman-hidpi-disabled="true" style="display: none">');
       });
-              
+  
+      $('#add').click( function () {
+        socket.emit('new color', color);
+      });
+      
+      $('#reload').click( function () {
+          location.reload();
+      });
+      
+      socket.on('message', function(message) {
+        console.log(message.data);
+      });
+      
     });

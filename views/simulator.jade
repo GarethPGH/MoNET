@@ -9,13 +9,14 @@ block content
   include js.jade
   
   script(src="/socket.io/socket.io.js")
+
     
   script.
-    
-    var socket = io.connect();
-    
+    var socket = io();
+        
     function sendColor() {
       var color = {
+        source : 'simulator',
         r : Math.floor(Math.random() * (256)),
         g : Math.floor(Math.random() * (256)),
         b : Math.floor(Math.random() * (256)),

@@ -57,8 +57,8 @@ router.get('/sample/:red/:green/:blue', function(req, res, next) {
   calibration.reset();
 });
 
-router.get('/color.json', function(req, res, next) {
-  res.send(color);
+router.get('/color', function(req, res, next) {
+  res.render('color', { title: 'Project MoNET:Color Sampler' });
 });
 
 router.get('/calibrate', function(req, res, next) {

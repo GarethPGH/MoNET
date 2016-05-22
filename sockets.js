@@ -15,7 +15,7 @@ var socketIO = function(server) {
     socket.on('new color', function(color) {
       console.log(color);
       var message = {
-        message: 'Server got it!',
+        message: 'Color added by ' + color.source,
         data: color
       }
 
