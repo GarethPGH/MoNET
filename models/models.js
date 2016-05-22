@@ -74,7 +74,7 @@ jobSchema.statics.getTopColors = function(cb) {
       sort: {date : -1}
     }
   }).exec(function(err, job) {
-    cb(job.samples);
+    cb(job.samples.revese());
   });
 
 }

@@ -34,7 +34,7 @@ router.get('/colorwall', function(req, res, next) {
 
 router.get('/colorwall1', function(req, res, next) {
   var colors = Job.getTopColors( function(colors) {
-    res.render('colorwall1',  {title: 'Project MoNET:Colorwall', colors : colors.reverse()  });
+    res.render('colorwall1',  {title: 'Project MoNET:Colorwall', colors : colors  });
   });
 });
 
