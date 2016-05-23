@@ -16,7 +16,8 @@ var socketIO = function(server) {
       console.log(color);
       var message = {
         message: 'Color added by ' + color.source,
-        data: color
+        data: color,
+        sample_id : {}
       }
 
 
@@ -32,8 +33,9 @@ var socketIO = function(server) {
           job.samples.push(sample._id);
           job.save();
         });
-
-        socket.broadcast.emit('message', message);
+        message.sample_id = sample._id
+        socket.emit('add success',sample._id);
+        io.sockets.emit('message', message);
       });
     });
   });

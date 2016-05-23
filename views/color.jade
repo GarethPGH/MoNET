@@ -5,7 +5,8 @@ block content
     .site-wrapper-inner
       .cover-container
         .inner.cover.text-center
-          h2#message.normal This page is really boring. Take or select a picture to extract its color!
+          img(src="/images/color_sampler.png")
+          h2#message.normal This page is really boring. Take or select a picture to extract its color and then add it to the painting.
           p#add-cell.normal(style="display:none")
             button#add.btn.btn-warning.btn-lg.normal Add it to the wall!
           label#file.btn.btn-lg.btn-file.btn-info.normal
@@ -90,8 +91,12 @@ block content
           location.reload();
       });
       
+      socket.on('add success', function(id) {
+        window.location.href = "/colorwall1?id=" + id;      
+        });
+      
       socket.on('message', function(message) {
-        console.log(message.data);
+        console.log(message);
       });
       
     });

@@ -1,9 +1,27 @@
 extends layout
 
 block content
-  include nav
+  nav.navbar.navbar-default.navbar-fixed-top
+    .container
+      .navbar-header
+        .button(type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar")
+          span.sr-only Toggle navigation
+          span.icon-bar
+          span.icon-bar
+          span.icon-bar
+        .navbar-brand
+          a(href="#")
+            img#nav-logo(src="/images/hero_logo.png")
+      #navbar.navbar-collapse.collapse
+        ul.nav.navbar-nav
+          li 
+            a(href=(route === 'index')? "#about" : "./#about") Back
+          li 
+            a#flash Find My Color
+
+
   each entry in colors
-    div.colorsplotch(style="background-color:rgb(#{entry.red},#{entry.green},#{entry.blue}); width:50px; height:50px; left:#{entry.x}px; top:#{entry.y}px;") &nbsp;
+    div.colorsplotch(sample_id="#{entry._id}"  style="background-color:rgb(#{entry.red},#{entry.green},#{entry.blue}); width:50px; height:50px; left:#{entry.x}px; top:#{entry.y}px;") &nbsp;
 
   include js.jade
 
@@ -12,9 +30,31 @@ block content
   script.
     
     var socket = io();
+    
+    function getUrlVars()
+    {
+      var vars = [], hash;
+      var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+      for(var i = 0; i < hashes.length; i++)
+      {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+      }
+      return vars;
+    }
         
     $(document).ready( function ()  {
-    
+      var stroke = $('[sample_id="' + getUrlVars().id + '"]');
+      console.log(stroke);
+      stroke.fadeIn(500).fadeOut(500).fadeIn(500).fadeOut(500).fadeIn(500);
+      
+      $('#flash').click(function(e) {
+        e.preventDefault;
+        console.log('test');
+        stroke.fadeIn(500).fadeOut(500).fadeIn(500).fadeOut(500).fadeIn(500);
+      });
+      
           
       socket.on('message', function(message) {
         var color = message.data;
