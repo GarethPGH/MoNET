@@ -10,8 +10,11 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var passport = require('passport');
 var passport = require('passport');
-var config = require('./config');
 var FacebookStrategy = require('passport-facebook').Strategy;
+
+if(!process.env.OPENSHIFT_MONGODB_DB_PASSWORD) {
+  var config = require('./config');
+}
 
 var app = express();
 
