@@ -59,9 +59,9 @@ if(process.env.OPENSHIFT_MONGODB_DB_PASSWORD){
       callbackURL: "http://www.projectmo.net/auth/facebook/callback"
     },
     function(accessToken, refreshToken, profile, cb) {
-      User.findOrCreate({ facebookId: profile.id }, function (err, user) {
-        return cb(err, user);
-      });
+      //console.log(profile);
+      //return cb(null, profile);
+      User.findOrCreate(profile, cb);
     }
   ));
 } else {
