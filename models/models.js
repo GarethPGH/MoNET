@@ -50,14 +50,14 @@ jobSchema.statics.getCurrentJob = function(cb) {
   }).exec(function(err, job) {
     if (!err) {
       if (job == null) {
-        console.log(job);
+        //console.log(job);
         newJob.save(function(err, job) {
           cb(job);
-          console.log('new!');
+          //console.log('new!');
           return;
         })
       } else {
-        console.log('exists');
+        //console.log('exists');
         cb(job);
       }
     }
@@ -82,3 +82,31 @@ jobSchema.statics.getTopColors = function(cb) {
 
 
 module.exports.Job = mongoose.model('Job', jobSchema);
+
+var userSchema = new Schema({
+  userId: ObjectId,
+  facebookId : { type : Number },
+  name : { type : String },
+  elevated : {type : Boolean }
+
+});
+
+userSchema.statics.findOrCreate = function(profile, cb) {
+  var newUser = new this();
+  this.model('User').findOne({facebookId : profile.id}).exec(function(err, user) {
+    if (!err) {
+      if (user == null) {
+        //console.log('new!');
+        newUser.facebookId = profile.id;
+        newUser.name = profile.displayName;
+        newUser.save(cb(err, user));
+      } else {
+        //console.log('exists');
+        cb(null, user);
+        return;
+      }
+    }
+  });
+}
+
+module.exports.User = mongoose.model('User', userSchema);

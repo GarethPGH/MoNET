@@ -2,10 +2,11 @@
 #include <ArduinoJson.h>
 #include "Adafruit_TCS34725.h"
 #include <ESP8266WiFi.h>
+#include "conf.h"
 
-const char* ssid     = "test";
-const char* password = "POULDEAU42";
-const char* host = "192.168.1.4";
+const char* ssid     =  MYSSID;
+const char* password = MYPASS;
+const char* host = MYHOST;
 
 int gainSetting = 0;
 int timeSetting = 5;

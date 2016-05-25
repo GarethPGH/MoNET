@@ -8,6 +8,10 @@ var sass = require('node-sass-middleware');
 var path = require('path');
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var passport = require('passport');
+var passport = require('passport');
+var config = require('./config');
+var FacebookStrategy = require('passport-facebook').Strategy;
 
 var app = express();
 
@@ -44,6 +48,52 @@ app.use(
 );
 
 app.use(express.static(path.join(__dirname, 'public')));
+
+var User = require('./models/models.js').User;
+
+if(process.env.OPENSHIFT_MONGODB_DB_PASSWORD){
+  //Prod App
+  passport.use(new FacebookStrategy({
+      clientID: process.env.MONET_FACEBOOK_APP_ID,
+      clientSecret: process.env.MONET_FACEBOOK_SECRET,
+      callbackURL: "http://www.projectmo.net/auth/facebook/callback"
+    },
+    function(accessToken, refreshToken, profile, cb) {
+      User.findOrCreate({ facebookId: profile.id }, function (err, user) {
+        return cb(err, user);
+      });
+    }
+  ));
+} else {
+  //Test App for Local Development
+  passport.use(new FacebookStrategy({
+      clientID: config.FACEBOOKAPPID,
+      clientSecret: config.FACEBOOKSECRET,
+      callbackURL: "http://192.168.1.4:3000/auth/facebook/callback"
+    },
+    function(accessToken, refreshToken, profile, cb) {
+      //console.log(profile);
+      //return cb(null, profile);
+      User.findOrCreate(profile, cb);
+    }
+  ));
+}
+
+app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.serializeUser(function(user, done) {
+  done(null, user._id);
+});
+
+passport.deserializeUser(function(id, done) {
+  User.findById(id, function(err, user) {
+    done(err, user);
+  });
+});
+
+
 
 app.use('/', routes);
 app.use('/users', users);

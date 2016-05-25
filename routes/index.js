@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var parser = require('parse-rss');
+var passport = require('passport');
 
 var Sample = require('../models/models.js').Sample;
 var Job = require('../models/models.js').Job;
@@ -40,7 +41,7 @@ router.get('/colorwall', function(req, res, next) {
 
 router.get('/colorwall1', function(req, res, next) {
   var id = req.query.id;
-  console.log(id);
+  //console.log(id);
   var colors = Job.getTopColors( function(colors) {
     res.render('colorwall1',  {title: 'Project MoNET:Colorwall', colors : colors  });
   });
@@ -51,7 +52,7 @@ router.get('/simulator', function(req, res, next) {
 });
 
 router.get('/sample/:red/:green/:blue', function(req, res, next) {
-  console.log(req.params);
+  //console.log(req.params);
   color = req.params;
   res.set('Content-Type', 'application/json');
   res.send(calibration);
@@ -62,32 +63,19 @@ router.get('/color', function(req, res, next) {
   res.render('color', { title: 'Project MoNET:Color Sampler' });
 });
 
-router.get('/calibrate', function(req, res, next) {
-  if(req.query.set_gain == "up") {
-    calibration.gain = 1;
-  }
-  if(req.query.set_gain == "down") {
-    calibration.gain = -1;
-  }
-  if(req.query.set_time == "up") {
-    calibration.time = 1;
-  }
-  if(req.query.set_time == "down") {
-    calibration.time = -1;
-  }
-  if(req.query.set_white == 1) {
-    calibration.setwhite = 1;
-    calibration.red = 255 - color.red;
-    calibration.green = 255 - color.green;
-    calibration.blue = 255 - color.blue;
-  }
-  if(req.query.set_white == -1) {
-    calibration.setwhite = 1;
-    calibration.red = 0;
-    calibration.green = 0;
-    calibration.blue = 0;
-  }
-  res.send(req.query);
+router.get('/login', function(req, res, next) {
+  res.render('login', { title: 'Project MoNET:Authorize' });
 });
+
+router.get('/auth/facebook',
+  passport.authenticate('facebook'));
+
+router.get('/auth/facebook/callback',
+  passport.authenticate('facebook', { failureRedirect: '/login' }),
+  function(req, res) {
+    //console.log(req.user.name);
+    // Successful authentication, redirect home.
+    res.redirect('/');
+  });
 
 module.exports = router;
