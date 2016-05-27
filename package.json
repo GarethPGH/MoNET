@@ -28,7 +28,8 @@
     "socket.io": "",
     "parse-rss": "",
     "passport":"",
-    "passport-facebook":""
+    "passport-facebook":"",
+    "webshot":""
   }
 
 }
