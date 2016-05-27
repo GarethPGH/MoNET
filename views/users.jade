@@ -14,8 +14,9 @@ block content
                   input(name="_id" style="display:none" value="#{user._id}")
                 .checkbox
                   label.checkbox
-                    input(type="checkbox" name="owner" value="true" disabled=true checked=user.owner) 
-                    |User is Owner
+                    if user.owner == true
+                      input(type="checkbox" name="owner" value="true" disabled=true checked=user.owner) 
+                      |User is Owner
                 .checkbox
                   label.checkbox
                     input(type="checkbox" name="elevated" value="true" checked=user.elevated) 
