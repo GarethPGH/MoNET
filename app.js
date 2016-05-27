@@ -17,7 +17,7 @@ if(!process.env.OPENSHIFT_MONGODB_DB_PASSWORD) {
 }
 
 var app = express();
-
+ 
 //Mongo Stuff
 var mongoose = require('mongoose');
 var connection_string = 'mongodb://localhost/monet';
