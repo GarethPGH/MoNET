@@ -1,0 +1,70 @@
+extends layout
+
+block content
+  .container
+    h1 User Management
+    p Use this page to assign privileges to users. With admin privileges, a user is able to modify jobs and alter text on the front page.
+    for user in users
+      figure.highlight
+        .row
+          .col-md-12
+              h2= user.name
+              form.form-inline(id="#{user._id}")
+                .input(name="_id" style="display:none" value="#{user._id}")
+                .checkbox
+                  label.checkbox
+                    input(type="checkbox" name="owner" value="true" disabled=true checked=user.owner) 
+                    |User is Owner
+                .checkbox
+                  label.checkbox
+                    input(type="checkbox" name="elevated" value="true" checked=user.elevated) 
+                    |User Has Admin privileges
+                button.pull-right.btn.btn-lg.btn-success.save(for="#{user._id}")
+                  i.fa.fa-save
+
+  include js.jade
+
+  script.
+
+    $.fn.serializeObject = function() {
+      var o = {};
+      var a = this.serializeArray();
+      $.each(a, function() {
+        var thisValue = (this.value === "true") ? true : this.value;
+            thisValue = (thisValue === "false") ? false : thisValue;
+              if (o[this.name]) {
+                if (!o[this.name].push) {
+                  o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(thisValue || '');
+              } else {
+                o[this.name] = thisValue || '';
+              }
+          });
+          return o;
+    };
+
+    $(document).ready( function () {
+
+      $('.save').click( function() {
+        var button = $(this)
+        var id = $(this).attr("for");
+        var data = $('[id=' + id + ']').serializeObject();
+        data.elevated = !data.elevated ? false : true;
+        button.addClass("btn-warning").addClass('fa-spin');
+
+        $.ajax({
+          url: '/private/users/',
+          type: 'PUT',
+          data: data,
+          success: function(data) {
+              console.log(data);
+              button.removeClass("btn-warning").removeClass('fa-spin');
+              }
+            });
+
+
+      })
+
+
+    });

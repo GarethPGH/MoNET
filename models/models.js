@@ -87,8 +87,8 @@ var userSchema = new Schema({
   userId: ObjectId,
   facebookId : { type : Number },
   name : { type : String },
-  elevated : {type : Boolean }
-
+  elevated : {type : Boolean },
+  owner : {type : Boolean }
 });
 
 userSchema.statics.findOrCreate = function(profile, cb) {
@@ -99,6 +99,8 @@ userSchema.statics.findOrCreate = function(profile, cb) {
         //console.log('new!');
         newUser.facebookId = profile.id;
         newUser.name = profile.displayName;
+        newUser.elevated = false;
+        newUser.owner = false;
         newUser.save(cb(err, user));
       } else {
         //console.log('exists');

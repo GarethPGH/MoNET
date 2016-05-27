@@ -108,3 +108,12 @@ div.colorsplotch {
 
 .blogcontent {
   padding: 20px 0; }
+
+.highlight {
+  padding: 9px 14px;
+  margin-bottom: 14px;
+  background-color: rgba(255, 150, 0, 0.5);
+  border: 1px solid #ff9600; }
+
+.form-inline .checkbox {
+  margin-right: 40px; }
