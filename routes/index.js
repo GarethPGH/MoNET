@@ -149,7 +149,8 @@ router.put('/private/:dest', function(req, res, next) {
             if(err) throw err;
             console.log(user);
             if(user) {
-              user.elevated = data.elevated || user.elevated;
+              if(!data.elevated) data.elevated = false;
+              user.elevated = data.elevated;
               user.save();
               res.send({result:"success"});
             } else {

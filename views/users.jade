@@ -47,7 +47,8 @@ block content
 
     $(document).ready( function () {
 
-      $('.save').click( function() {
+      $('.save').click( function(e) {
+        e.preventDefault;
         var button = $(this)
         var id = $(this).attr("for");
         var data = $('[id=' + id + ']').serializeObject();
@@ -58,17 +59,19 @@ block content
         console.log(data);
 
         $.ajax({
+          contentType: "application/json",
           url: '/private/users/',
           type: 'PUT',
-          data: data,
+          processData: false,
+          data: JSON.stringify(data),
           success: function(data) {
-              console.log(data);
+              button.removeClass("btn-warning");
               button.children('i').removeClass('fa-spin');
               }
             });
 
-
-      })
+            return false;
+      });
 
 
     });
