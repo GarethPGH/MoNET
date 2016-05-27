@@ -10,7 +10,8 @@ block content
           .col-md-12
               h2= user.name
               form.form-inline(id="#{user._id}")
-                .input(name="_id" style="display:none" value="#{user._id}")
+                .form-group
+                  input(name="_id" style="display:none" value="#{user._id}")
                 .checkbox
                   label.checkbox
                     input(type="checkbox" name="owner" value="true" disabled=true checked=user.owner) 
@@ -51,7 +52,10 @@ block content
         var id = $(this).attr("for");
         var data = $('[id=' + id + ']').serializeObject();
         data.elevated = !data.elevated ? false : true;
-        button.addClass("btn-warning").addClass('fa-spin');
+        button.addClass("btn-warning");
+        button.children('i').addClass('fa-spin');
+
+        console.log(data);
 
         $.ajax({
           url: '/private/users/',
@@ -59,7 +63,7 @@ block content
           data: data,
           success: function(data) {
               console.log(data);
-              button.removeClass("btn-warning").removeClass('fa-spin');
+              button.children('i').removeClass('fa-spin');
               }
             });
 
