@@ -12,9 +12,9 @@ block content
               form.form-inline(id="#{user._id}")
                 .form-group
                   input(name="_id" style="display:none" value="#{user._id}")
-                .checkbox
-                  label.checkbox
-                    if user.owner == true
+                if user.owner == true
+                  .checkbox
+                    label.checkbox
                       input(type="checkbox" name="owner" value="true" disabled=true checked=user.owner) 
                       |User is Owner
                 .checkbox
