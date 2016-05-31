@@ -117,3 +117,30 @@ div.colorsplotch {
 
 .form-inline .checkbox {
   margin-right: 40px; }
+
+a {
+  text-decoration: none; }
+
+a:hover {
+  text-decoration: none; }
+
+.inverse a {
+  color: rgba(255, 150, 0, 0.75); }
+
+.inverse a:hover {
+  color: #ff9600; }
+
+.social-links {
+  text-align: center; }
+
+.highlight.textblock {
+  padding-bottom: 70px; }
+
+.highlight.textblock .save {
+  margin-top: 10px; }
+
+.fp-edit {
+  border: 1px dashed; }
+
+#fp-top {
+  margin-top: 60px; }

@@ -112,3 +112,14 @@ userSchema.statics.findOrCreate = function(profile, cb) {
 }
 
 module.exports.User = mongoose.model('User', userSchema);
+
+var pageSchema = new Schema({
+  pageId: ObjectId,
+  subtitle : { type : String },
+  monet : { type : String },
+  works : { type : String },
+  colorwall : { type : String },
+  social : { type : String }
+});
+
+module.exports.Page = mongoose.model('Page', pageSchema);

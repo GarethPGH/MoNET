@@ -15,19 +15,14 @@ block content
               .col-md-12
                 img(src="images/hero_logo_words.png")
             .row
-              .col-md-12
-                p. 
-                  Project MoNET seeks to create a robot/web platform capable of manufacturing semi-abstract art based on environmental stimulus and crowd sourced data.
-                  It is set to debut at #[a(href="http://makerfairepittsburgh.com/") Maker Faire Pittsburgh 2016].
+              .col-md-12!= page.subtitle
       .col-md-2
   
     .row
       .col-md-2
       .col-md-8.content
         .row
-          .col-md-8(style= "margin-top: 60px")
-            p.
-              Project MoNET is named after #[a(href="https://en.wikipedia.org/wiki/Claude_Monet") Claude Monet], father of French Impressionism and celebrated beard enthusiast.
+          .col-md-8(style= "margin-top: 60px")!= page.monet
           .col-md-4.text-center
             img.circle-up(src="images/claude_monet.jpg")
       .col-md-2
@@ -37,11 +32,7 @@ block content
       .col-md-2
       .col-md-8.content
         h1 how it works
-        p.
-          Project MoNET will sample it's environment via a system of color sensors. It will then assemble these samples into an image and paint this to a canvas using a robotic brush.
-        p.
-          As an additional source of inspiration, MoNET will also paint based on aggregate color samples derived from crowd-submitted photographs.
-        p Tech curious? #[a(href="#") Go deeper down the rabbit hole.]
+        .holder!= page.works
       .col-md-2
     
     #color-wall.row
@@ -49,10 +40,7 @@ block content
       .col-md-2
       .col-md-8.content.colorwall
         img.header(src="images/colorwall.png")
-        p. 
-          The colorwall is MoNET's early technology demonstrator. It combines colors extracted from user submitted pictures and input from our color sensor network (assuming it&apos;s on)
-          to create a virtual painting. 
-        .text-center
+        .holder!= page.colorwall
           a.btn.btn-info.btn-lg.text-center(href="colorwall1") Check it out!
       .col-md-2
     //-
@@ -91,7 +79,21 @@ block content
       #social-target
       .col-md-2
       .col-md-8.content
-        h1 put social and code links here
+        h1 be social
+        .holder!= page.social
+        .row
+        .col-md-4.social-links
+          a(href="https://www.facebook.com/projectmonet/")
+            i.fa.fa-facebook-square 
+            |  Facebook        
+        .col-md-4.social-links
+          a(href="https://twitter.com/robomonet")
+            i.fa.fa-twitter-square 
+            |  GitHub          
+        .col-md-4.social-links
+            a(href="https://github.com/LikeClockwork/MoNET")
+              i.fa.fa-github-square 
+              |  GitHub
       .col-md-2     
                       
   include js.jade

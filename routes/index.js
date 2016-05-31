@@ -5,7 +5,6 @@ var passport = require('passport');
 
 var Sample = require('../models/models.js').Sample;
 var Job = require('../models/models.js').Job;
-var User = require('../models/models.js').User;
 
 var color = {
   red: 255,
@@ -32,14 +31,18 @@ var calibration = {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  parser('http://blog.projectmo.net/rss', function(err, out) {
+  Page.findOne().exec(function(err, page) {
     if (err) throw err;
-    var latest = out[0];
-    latest.summary = latest.summary.replace(/<(?:.|\n)*?>/gm, '').slice(0, -1);
-    res.render('index', {
-      title: 'Project MoNET',
-      route: "index",
-      latest: latest
+    parser('http://blog.projectmo.net/rss', function(err, out) {
+      if (err) throw err;
+      var latest = out[0];
+      latest.summary = latest.summary.replace(/<(?:.|\n)*?>/gm, '').slice(0, -1);
+      res.render('index', {
+        title: 'Project MoNET',
+        route: "index",
+        latest: latest,
+        page: page
+      });
     });
   });
 });
@@ -105,6 +108,11 @@ router.get('/auth/facebook/callback',
     res.redirect('/');
   });
 
+
+//Admin DB stuff
+var User = require('../models/models.js').User;
+var Page = require('../models/models.js').Page;
+
 //Private stuff!
 router.get('/private/:dest', function(req, res, next) {
   console.log(req.params.dest);
@@ -112,6 +120,7 @@ router.get('/private/:dest', function(req, res, next) {
     if (req.user.elevated || req.user.owner) {
       console.log('ok');
       switch (req.params.dest) {
+
         case "users":
           User.find().exec(function(err, users) {
             res.render("users", {
@@ -120,6 +129,17 @@ router.get('/private/:dest', function(req, res, next) {
             });
           });
           break;
+
+
+        case "frontpage":
+          Page.findOne().exec(function(err, page) {
+            res.render("frontpage", {
+              title: 'Project MoNET:Front Page Editor',
+              page: page
+            });
+          });
+          break;
+
         default:
           res.redirect('/');
       }
@@ -136,31 +156,60 @@ router.get('/private/:dest', function(req, res, next) {
 });
 
 
-//Private stuff!
+
+//For updating admin stuff
 router.put('/private/:dest', function(req, res, next) {
-  if (req.user) {
-    if (req.user.elevated || req.user.owner) {
-      var data = req.body;
+      if (req.user) {
+        if (req.user.elevated || req.user.owner) {
+          var data = req.body;
 
-      switch (req.params.dest) {
-        case "users":
-          console.log(data._id);
-          User.findById(data._id, function (err, user) {
-            if(err) throw err;
-            console.log(user);
-            if(user) {
-              if(!data.elevated) data.elevated = false;
-              user.elevated = data.elevated;
-              user.save();
-              res.send({result:"success"});
-            } else {
-              res.send({result:"failure"});
-            }
-          });
-          break;
-      }
-    }
-  }
-});
+          switch (req.params.dest) {
+            case "users":
+              console.log(data._id);
+              User.findById(data._id, function(err, user) {
+                if (!err) {
+                  console.log(user);
+                  if (user) {
+                    if (!data.elevated) data.elevated = false;
+                    user.elevated = data.elevated;
+                    user.save();
+                    res.send({
+                      result: "success"
+                    });
+                  }
+                } else {
+                  res.send({
+                    result: "failure"
+                  });
+                }
+              });
 
-module.exports = router;
+            case "frontpage":
+              Page.findOne().exec(function(err, page) {
+                  if (!err) {
+                    if (page === null) {
+                      page = new Page();
+                    }
+                    page.subtitle = data.subtitle;
+                    page.monet = data.monet;
+                    page.works = data.works;
+                    page.colorwall = data.colorwall;
+                    page.social = data.social;
+                    page.save();
+                    res.send({
+                      result: "success"
+                    });
+                  } else {
+                    res.send({
+                      result: "failure"
+                    });
+                  }
+                  });
+
+                  break;
+                }
+              }
+          }
+        });
+
+      module.exports = router;

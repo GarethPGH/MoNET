@@ -1,6 +1,7 @@
 extends layout
 
 block content
+
   .container
     h1 User Management
     p Use this page to assign privileges to users. With admin privileges, a user is able to modify jobs and alter text on the front page.
@@ -25,26 +26,9 @@ block content
                   i.fa.fa-save
 
   include js.jade
+  include formjs.jade
 
   script.
-
-    $.fn.serializeObject = function() {
-      var o = {};
-      var a = this.serializeArray();
-      $.each(a, function() {
-        var thisValue = (this.value === "true") ? true : this.value;
-            thisValue = (thisValue === "false") ? false : thisValue;
-              if (o[this.name]) {
-                if (!o[this.name].push) {
-                  o[this.name] = [o[this.name]];
-                }
-                o[this.name].push(thisValue || '');
-              } else {
-                o[this.name] = thisValue || '';
-              }
-          });
-          return o;
-    };
 
     $(document).ready( function () {
 
@@ -56,8 +40,6 @@ block content
         data.elevated = !data.elevated ? false : true;
         button.addClass("btn-warning");
         button.children('i').addClass('fa-spin');
-
-        console.log(data);
 
         $.ajax({
           contentType: "application/json",
