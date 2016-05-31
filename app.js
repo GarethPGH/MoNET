@@ -17,7 +17,7 @@ if(!process.env.OPENSHIFT_MONGODB_DB_PASSWORD) {
 }
 
 var app = express();
- 
+
 //Mongo Stuff
 var mongoose = require('mongoose');
 var connection_string = 'mongodb://localhost/monet';
@@ -72,7 +72,7 @@ if(process.env.OPENSHIFT_MONGODB_DB_PASSWORD){
   passport.use(new FacebookStrategy({
       clientID: config.FACEBOOKAPPID,
       clientSecret: config.FACEBOOKSECRET,
-      callbackURL: "http://192.168.1.4:3000/auth/facebook/callback"
+      callbackURL: "http://localhost:3000/auth/facebook/callback"
     },
     function(accessToken, refreshToken, profile, cb) {
       //console.log(profile);

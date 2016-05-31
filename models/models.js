@@ -71,7 +71,9 @@ jobSchema.statics.getTopColors = function(cb) {
     path: 'samples',
     options: {
       limit: 3000,
-      sort: {date : -1}
+      sort: {
+        date: -1
+      }
     }
   }).exec(function(err, job) {
     cb(job.samples.reverse());
@@ -85,15 +87,25 @@ module.exports.Job = mongoose.model('Job', jobSchema);
 
 var userSchema = new Schema({
   userId: ObjectId,
-  facebookId : { type : Number },
-  name : { type : String },
-  elevated : {type : Boolean },
-  owner : {type : Boolean }
+  facebookId: {
+    type: Number
+  },
+  name: {
+    type: String
+  },
+  elevated: {
+    type: Boolean
+  },
+  owner: {
+    type: Boolean
+  }
 });
 
 userSchema.statics.findOrCreate = function(profile, cb) {
   var newUser = new this();
-  this.model('User').findOne({facebookId : profile.id}).exec(function(err, user) {
+  this.model('User').findOne({
+    facebookId: profile.id
+  }).exec(function(err, user) {
     if (!err) {
       if (user == null) {
         //console.log('new!');
@@ -115,11 +127,50 @@ module.exports.User = mongoose.model('User', userSchema);
 
 var pageSchema = new Schema({
   pageId: ObjectId,
-  subtitle : { type : String },
-  monet : { type : String },
-  works : { type : String },
-  colorwall : { type : String },
-  social : { type : String }
+  subtitle: {
+    type: String
+  },
+  monet: {
+    type: String
+  },
+  works: {
+    type: String
+  },
+  colorwall: {
+    type: String
+  },
+  social: {
+    type: String
+  }
 });
+
+
+pageSchema.statics.updateOrCreate = function(data, cb) {
+  this.model('Page').findOne().exec(function(err, page) {
+    if (!err) {
+      if (page === null) {
+        var page = new this();
+        page.subtitle = "Subtitle";
+        page.monet = "Monet";
+        page.works = "Works";
+        page.colorwall = "Colorwall";
+        page.social = "Social";
+        page.save(cb(err, page));
+      }
+      if (data === null) {
+        cb(err, page);
+        return;
+      } else {
+          page.subtitle = data.subtitle;
+          page.monet = data.monet;
+          page.works = data.works;
+          page.colorwall = data.colorwall;
+          page.social = data.social;
+          page.save(cb(err, page));
+          return;
+      }
+    }
+  });
+}
 
 module.exports.Page = mongoose.model('Page', pageSchema);

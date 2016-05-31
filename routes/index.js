@@ -31,7 +31,7 @@ var calibration = {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  Page.findOne().exec(function(err, page) {
+  Page.updateOrCreate(null, function(err, page) {
     if (err) throw err;
     parser('http://blog.projectmo.net/rss', function(err, out) {
       if (err) throw err;
@@ -159,57 +159,48 @@ router.get('/private/:dest', function(req, res, next) {
 
 //For updating admin stuff
 router.put('/private/:dest', function(req, res, next) {
-      if (req.user) {
-        if (req.user.elevated || req.user.owner) {
-          var data = req.body;
+  if (req.user) {
+    if (req.user.elevated || req.user.owner) {
+      var data = req.body;
 
-          switch (req.params.dest) {
-            case "users":
-              console.log(data._id);
-              User.findById(data._id, function(err, user) {
-                if (!err) {
-                  console.log(user);
-                  if (user) {
-                    if (!data.elevated) data.elevated = false;
-                    user.elevated = data.elevated;
-                    user.save();
-                    res.send({
-                      result: "success"
-                    });
-                  }
-                } else {
-                  res.send({
-                    result: "failure"
-                  });
-                }
-              });
-
-            case "frontpage":
-              Page.findOne().exec(function(err, page) {
-                  if (!err) {
-                    if (page === null) {
-                      page = new Page();
-                    }
-                    page.subtitle = data.subtitle;
-                    page.monet = data.monet;
-                    page.works = data.works;
-                    page.colorwall = data.colorwall;
-                    page.social = data.social;
-                    page.save();
-                    res.send({
-                      result: "success"
-                    });
-                  } else {
-                    res.send({
-                      result: "failure"
-                    });
-                  }
-                  });
-
-                  break;
-                }
+      switch (req.params.dest) {
+        case "users":
+          console.log(data._id);
+          User.findById(data._id, function(err, user) {
+            if (!err) {
+              console.log(user);
+              if (user) {
+                if (!data.elevated) data.elevated = false;
+                user.elevated = data.elevated;
+                user.save();
+                res.send({
+                  result: "success"
+                });
               }
-          }
-        });
+            } else {
+              res.send({
+                result: "failure"
+              });
+            }
+          });
 
-      module.exports = router;
+        case "frontpage":
+          Page.updateOrCreate( data, function(err, page) {
+            if (!err) {
+              res.send({
+                result: "success"
+              });
+            } else {
+              res.send({
+                result: "failure"
+              });
+            }
+          });
+
+          break;
+      }
+    }
+  }
+});
+
+module.exports = router;
