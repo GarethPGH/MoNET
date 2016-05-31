@@ -1,0 +1,191 @@
+extends layout
+
+block content
+  nav.navbar.navbar-default.navbar-fixed-top
+    .container
+      .navbar-header
+        .button(type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar")
+          span.sr-only Toggle navigation
+          span.icon-bar
+          span.icon-bar
+          span.icon-bar
+        h2 Front Page Editor
+      #navbar.navbar-collapse.collapse
+        ul.nav.navbar-nav
+          li &nbsp;
+          li 
+            button#save.btn-lg.btn-success.navbar-btn Save
+          li &nbsp;
+          li
+            button#cancel.btn-lg.btn-danger.navbar-btn Cancel
+
+
+  .container-fluid
+    form#frontpage
+      .row#fp-top
+        .col-md-2
+        .col-md-8.content
+          p.
+            You can click on basically any dashed item in the page below to edit the text in it. That will flow over to the front page when you save this page. Be careful with HTML and check your work!
+        .col-md-2
+    
+    
+      #about.row.light-orange
+        .col-md-2
+        .col-md-8.content.hero
+          .row
+            .col-md-5
+              img(src="/images/hero_logo_head.png")
+            .col-md-7
+              .row
+                .col-md-12
+                  img(src="/images/hero_logo_words.png")
+              .row
+                #subtitle.col-md-12.fp-edit!= page.subtitle
+        .col-md-2
+    
+      .row
+        .col-md-2
+        .col-md-8.content
+          .row
+            #monet.col-md-8.fp-edit(style= "margin-top: 60px")!= page.monet
+            .col-md-4.text-center
+              img.circle-up(src="/images/claude_monet.jpg")
+        .col-md-2
+
+      .row.med-orange
+        #how-target
+        .col-md-2
+        .col-md-8.content
+          h1 how it works
+          .fp-edit#works!= page.works
+        .col-md-2
+      
+      #color-wall.row
+        #color-wall-target
+        .col-md-2
+        .col-md-8.content.colorwall
+          img.header(src="/images/colorwall.png")
+          #colorwall.fp-edit!= page.colorwall
+          .text-center
+            a.btn.btn-info.btn-lg.text-center(href="colorwall1") Check it out!
+        .col-md-2
+      //-
+        #team.row
+          #team-target
+          .col-md-2
+          .col-md-8.content
+            h1 the team
+            .row
+              .col-md-6
+                .text-center.image
+                  img.circle-up(src="images/claude_monet.jpg")
+                  h2 Guy Manchester
+                p VHS freegan listicle, readymade normcore quinoa kombucha man bun scenester flannel. Pabst kombucha four loko, swag truffaut health goth aesthetic umami 90's cred quinoa williamsburg chia. Humblebrag four loko bespoke vinyl. Keytar celiac butcher kickstarter direct trade, taxidermy health goth aesthetic hammock yr. Scenester skateboard chicharrones single-origin coffee deep v gochujang.
+                p Helvetica offal echo park cliche quinoa beard. Semiotics seitan banjo, migas taxidermy organic chia man bun crucifix marfa echo park ethical twee. Gluten-free selfies actually skateboard brunch cred. Jean shorts celiac blog chia try-hard actually. Flannel chartreuse tousled dreamcatcher. Mlkshk pug church-key iPhone literally selfies. Selvage slow-carb stumptown, hashtag mixtape green juice helvetica seitan trust fund polaroid.
+              .col-md-6
+                .text-center.image
+                  img.circle-up(src="images/claude_monet.jpg")
+                  h2 Manny Guystrong              
+                p VHS freegan listicle, readymade normcore quinoa kombucha man bun scenester flannel. Pabst kombucha four loko, swag truffaut health goth aesthetic umami 90's cred quinoa williamsburg chia. Humblebrag four loko bespoke vinyl. Keytar celiac butcher kickstarter direct trade, taxidermy health goth aesthetic hammock yr. Scenester skateboard chicharrones single-origin coffee deep v gochujang.
+                p Helvetica offal echo park cliche quinoa beard. Semiotics seitan banjo, migas taxidermy organic chia man bun crucifix marfa echo park ethical twee. Gluten-free selfies actually skateboard brunch cred. Jean shorts celiac blog chia try-hard actually. Flannel chartreuse tousled dreamcatcher. Mlkshk pug church-key iPhone literally selfies. Selvage slow-carb stumptown, hashtag mixtape green juice helvetica seitan trust fund polaroid.
+          .col-md-2
+        
+      if latest  
+        #blog.row.light-orange
+          #blog-target
+          .col-md-2
+          .col-md-8.content
+            h2 latest blog post
+            h1= latest.title
+            p.blogcontent #{latest.summary} <a href="#{latest.url}"> ... read more</a>
+            p.smaller Posted by #{latest.author} #{latest.time_ago} in the <a href="http://blog.projectmo.net">Project MoNET Blog</a>
+          .col-md-2      
+
+      #contact.row.inverse
+        #social-target
+        .col-md-2
+        .col-md-8.content
+          h1 be social
+          #social.fp-edit!= page.social
+          .row
+          .col-md-4.social-links
+            a(href="https://www.facebook.com/projectmonet/")
+              i.fa.fa-facebook-square 
+              |  Facebook        
+          .col-md-4.social-links
+            a(href="https://twitter.com/robomonet")
+              i.fa.fa-twitter-square 
+              |  GitHub          
+          .col-md-4.social-links
+              a(href="https://github.com/LikeClockwork/MoNET")
+                i.fa.fa-github-square 
+                |  GitHub
+        .col-md-2     
+                        
+  include js.jade
+  include formjs.jade
+
+  script(src="//cdn.tinymce.com/4/tinymce.min.js")
+
+  script.
+    $(document).ready( function () {
+        
+      tinymce.init({
+        selector: '#subtitle', inline: true,
+        plugins: "link",
+      });
+      tinymce.init({
+        selector: '#monet', inline: true,
+        plugins: "link",
+      });
+      tinymce.init({
+        selector: '#works', inline: true,
+        plugins: "link",
+      });
+      tinymce.init({
+        selector: '#social', inline: true,
+        plugins: "link",
+      });
+      tinymce.init({
+        selector: '#colorwall', inline: true,
+        plugins: "link",
+      });
+      
+      $('#save').click( function(e) {
+        e.preventDefault;
+        var button = $(this);
+        button.addClass("btn-warning");
+        button.html('Saving ...');
+        
+        var data = {};
+                
+        for( edId in tinyMCE.editors) {
+          data[edId] = tinyMCE.editors[edId].getContent();
+        }
+        
+        
+        console.log(data);
+
+        $.ajax({
+          contentType: "application/json",
+          url: '/private/frontpage/',
+          type: 'PUT',
+          processData: false,
+          data: JSON.stringify(data),
+          success: function(data) {
+              button.removeClass("btn-warning");
+              button.html('Save');
+              console.log(data);
+              }
+            });
+
+          return false;
+      });
+      
+      $('#cancel').click( function(e) {
+        e.preventDefault;
+        return false;
+      })
+      
+    });
