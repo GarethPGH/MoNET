@@ -146,16 +146,16 @@ var pageSchema = new Schema({
 
 
 pageSchema.statics.updateOrCreate = function(data, cb) {
+  var newPage = new this();
   this.model('Page').findOne().exec(function(err, page) {
     if (!err) {
       if (page === null) {
-        var page = new this();
-        page.subtitle = "Subtitle";
-        page.monet = "Monet";
-        page.works = "Works";
-        page.colorwall = "Colorwall";
-        page.social = "Social";
-        page.save(cb(err, page));
+        newPage.subtitle = "Subtitle";
+        newPage.monet = "Monet";
+        newPage.works = "Works";
+        newPage.colorwall = "Colorwall";
+        newPage.social = "Social";
+        newPage.save(cb(err, page));
       }
       if (data === null) {
         cb(err, page);
