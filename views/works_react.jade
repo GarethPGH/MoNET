@@ -1,0 +1,92 @@
+extends layout
+
+block content
+
+  .container
+    h1 Works Management
+    p Use this page to set up paintings and select which paintings is currently active. 
+    p Only one painting may be active at a time. The active painting determines where color samples will land.
+    p Only one active painting may be "live" at a time. Once a painting is closed cool stuff will happen.
+    .text-center
+      button#addJob.btn-success.btn-lg Add New Painting
+    #works
+
+
+  include js.jade
+  include formjs.jade
+
+  script(src="https://fb.me/react-with-addons-15.1.0.min.js")
+  script(src="https://fb.me/react-dom-15.1.0.min.js")
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js")
+
+
+  script(type="text/babel").
+
+    $(document).ready( function () {
+
+      var Painting = React.createClass({
+        render: function() {
+          var painting = this.props.painting;
+          painting.title = painting.title || "untitled"
+          
+          return (<figure className={painting.status}>
+                    <div className="row">
+                      <div className="col-md-12">
+                        <h2>{painting.title}</h2>
+                        <p>Sample Count: {painting.sampleCount}</p>
+                      </div>
+                    </div>
+                  </figure>);
+        }
+      });
+
+      var PaintingList = React.createClass({
+        render: function() {
+          var rows = [];
+          this.props.works.forEach(function(painting) {
+            rows.push(<Painting painting={painting} key={painting._id} />);
+            
+          });
+          return (
+                  <div>{rows}</div>
+                );
+              }
+            });
+
+      var works = !{JSON.stringify(works)};
+      
+      ReactDOM.render(
+        <PaintingList works={works} />,
+        document.getElementById('works')
+      );
+
+    
+
+
+      /*
+      $('.save').click( function(e) {
+        e.preventDefault;
+        var button = $(this)
+        var id = $(this).attr("for");
+        var data = $('[id=' + id + ']').serializeObject();
+        data.elevated = !data.elevated ? false : true;
+        button.addClass("btn-warning");
+        button.children('i').addClass('fa-spin');
+
+        $.ajax({
+          contentType: "application/json",
+          url: '/private/users/',
+          type: 'PUT',
+          processData: false,
+          data: JSON.stringify(data),
+          success: function(data) {
+              button.removeClass("btn-warning");
+              button.children('i').removeClass('fa-spin');
+              }
+            });
+
+            return false;
+      });
+      */
+
+    });

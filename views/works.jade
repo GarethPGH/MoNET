@@ -1,0 +1,131 @@
+extends layout
+
+block content
+
+  .container
+    h1 Works Management
+    p Use this page to set up paintings and select which paintings is currently active. 
+    p Only one painting may be active at a time. The active painting determines where color samples will land.
+    p Only one active painting may be "live" at a time. Once a painting is closed cool stuff will happen.
+    p.text-center
+      button#addJob.btn-success.btn.btn-lg Add New Painting
+    
+    for work in works
+      figure.wc(class= "#{work.status}")
+        .row
+          .col-md-12
+            h2.fp-edit(title-for="#{work._id}")= work.title || 'untitled' 
+            p
+              strong Started
+              |  #{work.date}
+            p
+              strong Sample Count
+              |  #{work.sampleCount}
+            button.btn.btn-success.wc-play(style= "#{ work.status === 'active' ? 'display: none' : ''}")
+              i.fa.fa-play
+            button.btn.btn-warning.wc-pause(style= "#{ work.status === 'paused' ? 'display: none' : ''}")
+              i.fa.fa-pause  
+            button.btn.btn-default.wc-config
+              i.fa.fa-cogs
+              |  Configure Painting    
+            button.wc-close-pop.btn.btn-danger(data-toggle="modal" data-target='[modal-id="#{work._id}"]')
+              i.fa.fa-stop 
+              |  Close Painting
+        
+        .row
+          .col-md-12
+            h4 Configuration  
+        
+        if work.sampleCount > 0
+          .row
+            .col-md-12
+              .alert.alert-danger This painting already has samples, so its configuration is locked down.
+
+
+
+        
+        .row.config-drawer.text-center
+
+          .col-md-1
+            p 
+              strong.small <br>Width
+            input.form-control.in-small.text-center.small.in-slider(dataId="#{work._id}" param="width" type="number" inputmode="numeric" value="#{work.width || 960}" disabled="#{work.sampleCount > 0}")
+            p
+              .slider(dataId="#{work._id}" param="width" min='120' max='960' initalValue="#{work.width || 960}" disabled="#{work.sampleCount > 0}")
+          .col-md-1
+            p 
+              strong.small <br>Height
+            input.form-control.in-small.text-center.small.in-slider.input-disabled(dataId="#{work._id}" param="height" type="number" inputmode="numeric" value="#{work.height || 480}" disabled="#{work.sampleCount > 0}")
+            p
+              .slider(dataId="#{work._id}" param="height" min='120' max='480' initalValue="#{work.height || 480}" disabled="#{work.sampleCount > 0}")
+
+
+          .col-md-4
+            p 
+              strong <br>Painting Mode
+            select.form-control(multiple size=12 disabled="#{work.sampleCount > 0}")
+              option Blocks
+              option Points
+              option Vertical Lines
+              option Horizontal Lines
+          
+
+          .col-md-1
+            p 
+              strong.small Stroke<br>Width
+            input.form-control.in-small.text-center.small.in-slider(dataId="#{work._id}" param="swidth" type="number" inputmode="numeric" value="#{work.swidth || 10}" disabled="#{work.sampleCount > 0}")
+            p
+              .slider(dataId="#{work._id}" param="swidth" min='5' max='10' initalValue="#{work.swidth || 10}" disabled="#{work.sampleCount > 0}") 
+          .col-md-1
+            p 
+              strong.small Stroke<br>Length
+            input.form-control.in-small.text-center.small.in-slider(dataId="#{work._id}" param="slength" type="number" inputmode="numeric" value="#{work.slength || 20}" disabled="#{work.sampleCount > 0}")
+            p
+              .slider(dataId="#{work._id}" param="slength" min='10' max='20' initalValue="#{work.slength || 20}" disabled="#{work.sampleCount > 0}")                  
+          .col-md-2
+            p 
+              strong.small <br>Horizontal Randomness
+            input.form-control.in-small.text-center.small.in-slider(dataId="#{work._id}" param="xrand" type="number" inputmode="numeric" value="#{work.slength || 0}" disabled="#{work.sampleCount > 0}")
+            p
+              .slider(dataId="#{work._id}" param="slength" min='0' max='100' initalValue="#{work.slength || 0}" disabled="#{work.sampleCount > 0}")     
+          .col-md-2
+            p 
+              strong.small <br>Vertical Randomness
+            input.form-control.in-small.text-center.small.in-slider(dataId="#{work._id}" param="yrand" type="number" inputmode="numeric" value="#{work.slength || 0}" disabled="#{work.sampleCount > 0}")
+            p
+              .slider(dataId="#{work._id}" param="yrand" min='0' max='100' initalValue="#{work.slength || 0}" disabled="#{work.sampleCount > 0}")     
+                                
+            
+              
+      .modal.fade(modal-id="#{work._id}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel")
+          .modal-dialog(role="document")
+            .modal-content  
+              .modal-header
+                .modal-title
+                  h2 Confirm closing of 
+                    i #{work.title || 'untitled'}
+              .modal-body
+                p Closing of a painting is irreversible and it will kick off a several events:
+                ul
+                  li The painting will be converted to an image file.
+                  li All associated samples will be dumped (maybe?).
+                  li The painting will be posted to the gallery, facebook, and twiter.
+                p You sure you want to do this?
+              .modal-footer
+                button.wc-close.btn.btn-success Yes, close it!
+                button.btn.btn-danger( data-dismiss="modal") Nevermind!
+              
+              
+
+
+              
+              
+
+  include js.jade
+  include formjs.jade
+
+  link(rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/ui-lightness/jquery-ui.min.css")
+
+  script(src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js" integrity="sha256-xNjb53/rY+WmG+4L6tTl9m6PpqknWZvRt0rO1SRnJzw=" crossorigin="anonymous")
+
+  script(src="/javascripts/works.js")
