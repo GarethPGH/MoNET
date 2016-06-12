@@ -9,52 +9,22 @@ block content
       figure.highlight
         .row
           .col-md-12
-              h2= user.name
-              form.form-inline(id="#{user._id}")
-                .form-group
-                  input(name="_id" style="display:none" value="#{user._id}")
-                if user.owner == true
-                  .checkbox
-                    label.checkbox
-                      input(type="checkbox" name="owner" value="true" disabled=true checked=user.owner) 
-                      |User is Owner
+            h2= user.name
+            form.form-inline(id="#{user._id}")
+              .form-group
+                input(name="_id" style="display:none" value="#{user._id}")
+              if user.owner == true
                 .checkbox
                   label.checkbox
-                    input(type="checkbox" name="elevated" value="true" checked=user.elevated) 
-                    |User Has Admin privileges
-                button.pull-right.btn.btn-lg.btn-success.save(for="#{user._id}")
-                  i.fa.fa-save
+                    input(type="checkbox" name="owner" value="true" disabled=true checked=user.owner) 
+                    |User is Owner
+              .checkbox
+                label.checkbox
+                  input(type="checkbox" name="elevated" value="true" checked=user.elevated) 
+                  |User Has Admin privileges
+              button.pull-right.btn.btn-lg.btn-success.save(for="#{user._id}")
+                i.fa.fa-save
 
   include js.jade
-  include formjs.jade
-
-  script.
-
-    $(document).ready( function () {
-
-      $('.save').click( function(e) {
-        e.preventDefault;
-        var button = $(this)
-        var id = $(this).attr("for");
-        var data = $('[id=' + id + ']').serializeObject();
-        data.elevated = !data.elevated ? false : true;
-        button.addClass("btn-warning");
-        button.children('i').addClass('fa-spin');
-
-        $.ajax({
-          contentType: "application/json",
-          url: '/private/users/',
-          type: 'PUT',
-          processData: false,
-          data: JSON.stringify(data),
-          success: function(data) {
-              button.removeClass("btn-warning");
-              button.children('i').removeClass('fa-spin');
-              }
-            });
-
-            return false;
-      });
-
-
-    });
+  script(src="/javascripts/formhandler.js")
+  script(src="/javascripts/login.js")

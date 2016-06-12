@@ -116,7 +116,7 @@ block content
           .col-md-4.social-links
             a(href="https://twitter.com/robomonet")
               i.fa.fa-twitter-square 
-              |  GitHub          
+              |  Twitter          
           .col-md-4.social-links
               a(href="https://github.com/LikeClockwork/MoNET")
                 i.fa.fa-github-square 
@@ -124,68 +124,9 @@ block content
         .col-md-2     
                         
   include js.jade
-  include formjs.jade
 
+  script(src="/javascripts/formhandler.js")
   script(src="//cdn.tinymce.com/4/tinymce.min.js")
+  script(src="/javascripts/frontpage.js")
 
-  script.
-    $(document).ready( function () {
-        
-      tinymce.init({
-        selector: '#subtitle', inline: true,
-        plugins: "link",
-      });
-      tinymce.init({
-        selector: '#monet', inline: true,
-        plugins: "link",
-      });
-      tinymce.init({
-        selector: '#works', inline: true,
-        plugins: "link",
-      });
-      tinymce.init({
-        selector: '#social', inline: true,
-        plugins: "link",
-      });
-      tinymce.init({
-        selector: '#colorwall', inline: true,
-        plugins: "link",
-      });
-      
-      $('#save').click( function(e) {
-        e.preventDefault;
-        var button = $(this);
-        button.addClass("btn-warning");
-        button.html('Saving ...');
-        
-        var data = {};
-                
-        for( edId in tinyMCE.editors) {
-          data[edId] = tinyMCE.editors[edId].getContent();
-        }
-        
-        
-        console.log(data);
-
-        $.ajax({
-          contentType: "application/json",
-          url: '/private/frontpage/',
-          type: 'PUT',
-          processData: false,
-          data: JSON.stringify(data),
-          success: function(data) {
-              button.removeClass("btn-warning");
-              button.html('Save');
-              console.log(data);
-              }
-            });
-
-          return false;
-      });
-      
-      $('#cancel').click( function(e) {
-        e.preventDefault;
-        return false;
-      })
-      
-    });
+    

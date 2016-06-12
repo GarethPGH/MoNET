@@ -9,10 +9,12 @@ var path = require('path');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var passport = require('passport');
-var passport = require('passport');
+var session = require('express-session');
+var MongoStore = require('connect-mongo/es5')(session);
 var FacebookStrategy = require('passport-facebook').Strategy;
 
-if(!process.env.OPENSHIFT_MONGODB_DB_PASSWORD) {
+
+if (!process.env.OPENSHIFT_MONGODB_DB_PASSWORD) {
   var config = require('./config');
 }
 
@@ -22,12 +24,12 @@ var app = express();
 var mongoose = require('mongoose');
 var connection_string = 'mongodb://localhost/monet';
 // if OPENSHIFT env variables are present, use the available connection info:
-if(process.env.OPENSHIFT_MONGODB_DB_PASSWORD){
+if (process.env.OPENSHIFT_MONGODB_DB_PASSWORD) {
   connection_string = 'mongodb://' + process.env.OPENSHIFT_MONGODB_DB_USERNAME + ":" +
-  process.env.OPENSHIFT_MONGODB_DB_PASSWORD + "@" +
-  process.env.OPENSHIFT_MONGODB_DB_HOST + ':' +
-  process.env.OPENSHIFT_MONGODB_DB_PORT + '/' +
-  process.env.OPENSHIFT_APP_NAME;
+    process.env.OPENSHIFT_MONGODB_DB_PASSWORD + "@" +
+    process.env.OPENSHIFT_MONGODB_DB_HOST + ':' +
+    process.env.OPENSHIFT_MONGODB_DB_PORT + '/' +
+    process.env.OPENSHIFT_APP_NAME;
 }
 mongoose.connect(connection_string);
 
@@ -39,22 +41,24 @@ app.set('view engine', 'jade');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
 app.use(cookieParser());
 app.use(
-   sass({
-       src: __dirname + '/sass',
-       dest: __dirname + '/public',
-       debug: true,
-       indentedSyntax : true,
-   })
+  sass({
+    src: __dirname + '/sass',
+    dest: __dirname + '/public/stylesheets',
+    debug: true,
+    indentedSyntax: true,
+  })
 );
 
 app.use(express.static(path.join(__dirname, 'public')));
 
 var User = require('./models/models.js').User;
 
-if(process.env.OPENSHIFT_MONGODB_DB_PASSWORD){
+if (process.env.OPENSHIFT_MONGODB_DB_PASSWORD) {
   //Prod App
   passport.use(new FacebookStrategy({
       clientID: process.env.MONET_FACEBOOK_APP_ID,
@@ -82,7 +86,13 @@ if(process.env.OPENSHIFT_MONGODB_DB_PASSWORD){
   ));
 }
 
-app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
+app.use(session({
+  resave: true,
+  saveUninitialized: true,
+  key: "session",
+  secret: 'keyboard cat',
+  store: new MongoStore({ mongooseConnection: mongoose.connection })
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 

@@ -109,11 +109,28 @@ div.colorsplotch {
 .blogcontent {
   padding: 20px 0; }
 
-.highlight {
+.highlight, .active, .paused, .closed {
   padding: 9px 14px;
   margin-bottom: 14px;
-  background-color: rgba(255, 150, 0, 0.5);
+  background-color: rgba(255, 150, 0, 0.4);
   border: 1px solid #ff9600; }
+
+.active strong, .paused strong, .closed strong {
+  color: #ff9600; }
+
+.paused {
+  background-color: rgba(190, 230, 190, 0.4);
+  border-color: #bee6be; }
+
+.paused strong {
+  color: #bee6be; }
+
+.closed {
+  background-color: rgba(220, 220, 220, 0.4);
+  border-color: gainsboro; }
+
+.closed strong {
+  color: gainsboro; }
 
 .form-inline .checkbox {
   margin-right: 40px; }
@@ -144,3 +161,26 @@ a:hover {
 
 #fp-top {
   margin-top: 60px; }
+
+.wc-play, .wc-pause, .wc-close-pop, .wc-config {
+  position: absolute; }
+
+.wc-close-pop {
+  right: 10px;
+  bottom: 0; }
+
+.wc-play, .wc-pause {
+  right: 10px;
+  top: 10px; }
+
+.wc-config {
+  bottom: 0;
+  right: 160px; }
+
+.ui-slider-vertical {
+  margin-left: auto;
+  height: 200px !important;
+  margin-right: auto; }
+
+.in-small {
+  width: 100%; }

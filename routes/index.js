@@ -57,7 +57,7 @@ router.get('/colorwall', function(req, res, next) {
 router.get('/colorwall1', function(req, res, next) {
   var id = req.query.id;
   //console.log(id);
-  var colors = Job.getTopColors(function(colors) {
+  var colors = Job.getTopSamples(function(colors) {
     res.render('colorwall1', {
       title: 'Project MoNET:Colorwall',
       colors: colors
@@ -113,12 +113,11 @@ router.get('/auth/facebook/callback',
 var User = require('../models/models.js').User;
 var Page = require('../models/models.js').Page;
 
-//Private stuff!
+//Private stuff, don't read or the app will break!
 router.get('/private/:dest', function(req, res, next) {
   console.log(req.params.dest);
   if (req.user) {
     if (req.user.elevated || req.user.owner) {
-      console.log('ok');
       switch (req.params.dest) {
 
         case "users":
@@ -136,6 +135,16 @@ router.get('/private/:dest', function(req, res, next) {
             res.render("frontpage", {
               title: 'Project MoNET:Front Page Editor',
               page: page
+            });
+          });
+          break;
+
+        case "works":
+          page = req.query.page || 0;
+          Job.get(5, page, function(err, works) {
+            res.render("works", {
+              title: 'Project MoNET:Work Control',
+              works: works
             });
           });
           break;
@@ -165,27 +174,16 @@ router.put('/private/:dest', function(req, res, next) {
 
       switch (req.params.dest) {
         case "users":
-          console.log(data._id);
-          User.findById(data._id, function(err, user) {
-            if (!err) {
-              console.log(user);
-              if (user) {
-                if (!data.elevated) data.elevated = false;
-                user.elevated = data.elevated;
-                user.save();
-                res.send({
-                  result: "success"
-                });
-              }
-            } else {
-              res.send({
-                result: "failure"
-              });
-            }
+          console.log(data._id, data.elevated);
+          User.update(data, function(status) {
+            res.send({
+              result: status
+            })
           });
+          break;
 
         case "frontpage":
-          Page.updateOrCreate( data, function(err, page) {
+          Page.updateOrCreate(data, function(err, page) {
             if (!err) {
               res.send({
                 result: "success"
@@ -196,8 +194,18 @@ router.put('/private/:dest', function(req, res, next) {
               });
             }
           });
-
           break;
+
+        case "works":
+          switch (data.action) {
+            case "add":
+              Job.create(function(job) {
+                console.log(job);
+              });
+              break;
+          }
+          break;
+
       }
     }
   }
