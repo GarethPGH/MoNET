@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MoNET Canvas</title>
+
+    <script src="Scripts/jquery-2.2.3.min.js"></script>
+    <script type="text/javascript" src="Scripts/TestResponsiveness.js"></script>
+    <script type="text/javascript" src="Scripts/gallerypreview.js"></script>
+   
+    <script type="text/javascript" src="ReadCamera.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="MoNetStyles.css" />.
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    
+</head>
+<body>
+        <div class="container-fluid">
+            <div>
+                <!--This will be a banner, in the future probable some kind of cool graphic with cool lettering but for now just a heading-->
+                <h1 id="banner">MoNET PainterBot</h1>
+                <p id="intro">Come see what the robot artist is painting!</p>
+            </div>
+        </div>
+    <div class="thumbalign">
+        <div class="thumbrow">
+            <div class="thumbnails">
+                <!-- a preview image here -->
+            </div>
+            <div class="thumbnails">
+                <!-- a preview image here -->
+            </div>
+            <div class="thumbnails">
+                <!-- a preview image here -->
+            </div>
+        </div>
+        <div class="thumbrow">
+            <div class="thumbnails">
+                <!-- a preview image here -->
+            </div>
+            <div class="thumbnails">
+                <!-- a preview image here -->
+            </div>
+            <div class="thumbnails">
+                <!-- a preview image here -->
+            </div>
+        </div>
+        <div class="thumbrow">
+            <div class="thumbnails">
+                <!-- a preview image here -->
+            </div>
+            <div class="thumbnails">
+                <!-- a preview image here -->
+            </div>
+            <div class="thumbnails">
+                <!-- a preview image here -->
+            </div>
+        </div>
+        <div class="thumbrow">
+            <div class="thumbnails">
+                <!-- a preview image here -->
+            </div>
+            <div class="thumbnails">
+                <!-- a preview image here -->
+            </div>
+            <div class="thumbnails">
+                <!-- a preview image here -->
+            </div>
+        </div>
+      
+                <div id="button1"><input type="button" name="Previous" class="button" id="Prev" /></div>
+                <div id="button2"><input type="button" name="Next" class="button" id="Nxt" /></div>
+        
+    </div>
+  <!--I dont know if I am going to use this
+         <div class="container-fluid">
+    This will hold a textbox that displays a hexcode and a preview of the rgb value the camera is using at this momment
+        <div id="colorbox"></div> <span id="colorhexvalue">colorhexvalue</span>
+      </div>
+      -->
+   
+    <div class="container-fluid" id="Frame">
+        <div class="row">
+            <div>
+                <!--This will hold a canvas of real time what the robot is painting-->
+                <canvas id="Painting">
+                    <!--There will be a JS implementaion that will scale canvas to size of screen-->
+                    <!--JS will link positions and color values to the browser-->
+                </canvas>
+            </div>
+        </div>
+    </div>
+ 
+    <div><!--create a About the project, or at least an about the robot section that pops up on mouseclick, perhaps add a contact us section--></div>
+</body>
+</html>

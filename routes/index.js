@@ -54,6 +54,12 @@ router.get('/colorwall', function(req, res, next) {
   });
 });
 
+router.get('/gallery', function(req, res, next) {
+  res.sendfile('public/gallery/MoNetCanvas.html');
+});
+
+
+
 router.get('/colorwall1', function(req, res, next) {
   var id = req.query.id;
   //console.log(id);
