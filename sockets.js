@@ -18,7 +18,7 @@ var socketIO = function(server) {
 
       Job.getCurrent(function(job) {
         if (job != null) {
-          console.log(color);
+          //console.log(color);
           message = {
             message: 'Color added by ' + color.source,
             data: color,

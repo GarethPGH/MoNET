@@ -152,7 +152,9 @@ jobSchema.statics.play = function(job) {
 }
 
 jobSchema.statics.getTopSamples = function(cb) {
-  this.model('Job').findOne().sort({
+  this.model('Job').findOne({
+    status: 'active'
+  }).sort({
     date: -1
   }).populate({
     path: 'samples',

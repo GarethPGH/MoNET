@@ -62,8 +62,9 @@ router.get('/gallery', function(req, res, next) {
 
 router.get('/colorwall1', function(req, res, next) {
   var id = req.query.id;
-  //console.log(id);
-  var colors = Job.getTopSamples(function(colors) {
+  console.log(id);
+  Job.getTopSamples(function(colors) {
+    console.log(colors);
     res.render('colorwall1', {
       title: 'Project MoNET:Colorwall',
       colors: colors
