@@ -124,15 +124,19 @@ jobSchema.statics.getCurrent = function(cb) {
   });
 }
 
-jobSchema.statics.pause = function(job) {
-  this.model('Job').findById(job._id).exec(function(err, job) {
+jobSchema.statics.pause = function(job, cb) {
+  this.model('Job').findById(job).exec(function(err, job) {
     if (err) throw err;
     job.status = 'paused';
     job.save();
+    cb(job);
   });
 }
 
-jobSchema.statics.play = function(job) {
+jobSchema.statics.play = function(job, cb) {
+  console.log(job);
+  var selectedJob = this.model('Job').findById(job);
+  //console.log(selectedJob);
   var jobs = this.model('Job');
   jobs.update({
       status: {
@@ -145,9 +149,12 @@ jobSchema.statics.play = function(job) {
     },
     function(err) {
       if (err) throw err;
-      job.status = 'active';
-      job.save();
-      return;
+      selectedJob.exec(function(err, job) {
+        job.status = 'active';
+        job.save();
+        cb(job);
+
+      });
     });
 }
 

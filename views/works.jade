@@ -21,9 +21,9 @@ block content
             p
               strong Sample Count
               |  #{work.sampleCount}
-            button.btn.btn-success.wc-play(style= "#{ work.status === 'active' ? 'display: none' : ''}")
+            button.btn.btn-success.wc-play(style= "#{ work.status === 'active' ? 'display: none' : ''}" data-id= "#{work._id}" )
               i.fa.fa-play
-            button.btn.btn-warning.wc-pause(style= "#{ work.status === 'paused' ? 'display: none' : ''}")
+            button.btn.btn-warning.wc-pause(style= "#{ work.status === 'paused' ? 'display: none' : ''}" data-id= "#{work._id}")
               i.fa.fa-pause  
             button.btn.btn-default.wc-config
               i.fa.fa-cogs

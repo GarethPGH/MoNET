@@ -47,8 +47,54 @@ $(document).ready(function() {
       }
     });
 
+    location.reload();
     return false;
 
   });
+
+  $('.wc-play').click(function() {
+    var data = {
+      action: 'play',
+      id: $(this).attr('data-id')
+    }
+
+    $.ajax({
+      contentType: "application/json",
+      url: '/private/works/',
+      type: 'PUT',
+      processData: false,
+      data: JSON.stringify(data),
+      success: function(data) {
+        console.log(data);
+      }
+    });
+
+    location.reload();
+    return false;
+
+  });
+
+
+    $('.wc-pause').click(function() {
+      var data = {
+        action: 'pause',
+        id: $(this).attr('data-id')
+      }
+
+      $.ajax({
+        contentType: "application/json",
+        url: '/private/works/',
+        type: 'PUT',
+        processData: false,
+        data: JSON.stringify(data),
+        success: function(data) {
+          console.log(data);
+        }
+      });
+
+      location.reload();
+      return false;
+
+    });
 
 });

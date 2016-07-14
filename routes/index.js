@@ -204,12 +204,24 @@ router.put('/private/:dest', function(req, res, next) {
           break;
 
         case "works":
+          console.log(data);
           switch (data.action) {
             case "add":
-              Job.create(function(job) {
+              Job.create( function(job) {
                 console.log(job);
               });
               break;
+            case "play":
+              Job.play(data.id, function(job) {
+                console.log(job);
+              });
+              break;
+            case "pause":
+              Job.pause(data.id, function(job) {
+                console.log(job);
+              });
+              break;
+
           }
           break;
 
