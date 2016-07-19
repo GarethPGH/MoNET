@@ -17,15 +17,17 @@ block content
           li 
             a(href=(route === 'index')? "#about" : "./#about") Back
           li 
+            a(href=(route === 'index')? "color" : "./color") Add To The Wall            
+          li 
             a#flash Find My Color
 
-
-  each entry in colors
-    div.colorsplotch(sample_id="#{entry._id}"  style="background-color:rgb(#{entry.r},#{entry.g},#{entry.b}); width:50px; height:50px; left:#{entry.x}px; top:#{entry.y}px;") &nbsp;
+  .container-fluid(style="overflow:hidden; height: 1000px; margin-top:80px; position:relative" )
+    .row(style="position:relative; left: -40px; top: -20px" )
+      .col-md-12
+      each entry in colors
+        div.colorsplotch(sample_id="#{entry._id}"  style="background-color:rgb(#{entry.red},#{entry.green},#{entry.blue}); width:50px; height:50px; left:#{entry.x}px; top:#{entry.y}px;") &nbsp;
 
   include js.jade
 
   script(src="/socket.io/socket.io.js")
   script(src="/javascripts/colorwall1.js")
-    
-    

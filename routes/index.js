@@ -62,9 +62,9 @@ router.get('/gallery', function(req, res, next) {
 
 router.get('/colorwall1', function(req, res, next) {
   var id = req.query.id;
-  console.log(id);
+  //console.log(id);
   Job.getTopSamples(function(colors) {
-    console.log(colors);
+    //console.log(colors);
     res.render('colorwall1', {
       title: 'Project MoNET:Colorwall',
       colors: colors
@@ -204,21 +204,21 @@ router.put('/private/:dest', function(req, res, next) {
           break;
 
         case "works":
-          console.log(data);
+          //console.log(data);
           switch (data.action) {
             case "add":
               Job.create( function(job) {
-                console.log(job);
+                //console.log(job);
               });
               break;
             case "play":
               Job.play(data.id, function(job) {
-                console.log(job);
+                //console.log(job);
               });
               break;
             case "pause":
               Job.pause(data.id, function(job) {
-                console.log(job);
+                //console.log(job);
               });
               break;
 

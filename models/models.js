@@ -29,9 +29,10 @@ var sampleSchema = new Schema({
 
 sampleSchema.statics.create = function(sample, cb) {
   var newSample = new this();
-  newSample.red = sample.red;
-  newSample.blue = sample.blue;
-  newSample.green = sample.green;
+  console.log("adding to samples", sample);
+  newSample.red = sample.r;
+  newSample.blue = sample.b;
+  newSample.green = sample.g;
   newSample.x = sample.x;
   newSample.y = sample.y;
   newSample.save(function(err, sample) {
@@ -152,7 +153,7 @@ jobSchema.statics.play = function(job, cb) {
       selectedJob.exec(function(err, job) {
         job.status = 'active';
         job.save();
-        cb(job);
+        cb(selectedJob);
 
       });
     });
