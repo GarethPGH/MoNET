@@ -27,7 +27,7 @@ $(document).ready(function() {
   socket.on('message', function(message) {
     var color = message.data;
     $('body').append(
-      '<div class="colorsplotch" style="background-color:rgb(' + color.red + ',' + color.green + ',' + color.blue + '); width:50px; height:50px; left:' + color.x + 'px; top:' + color.y + 'px;"> &nbsp</div>'
+      '<div class="colorsplotch" style="background-color:rgb(' + color.r + ',' + color.g + ',' + color.b + '); width:50px; height:50px; left:' + color.x + 'px; top:' + color.y + 'px;"> &nbsp</div>'
     )
     console.log(color);
   });
