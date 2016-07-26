@@ -30,9 +30,9 @@ var sampleSchema = new Schema({
 sampleSchema.statics.create = function(sample, cb) {
   var newSample = new this();
   console.log("adding to samples", sample);
-  newSample.red = sample.r;
-  newSample.blue = sample.b;
-  newSample.green = sample.g;
+  newSample.red = sample.red;
+  newSample.blue = sample.blue;
+  newSample.green = sample.green;
   newSample.x = sample.x;
   newSample.y = sample.y;
   newSample.save(function(err, sample) {
@@ -91,6 +91,20 @@ jobSchema.statics.create = function(cb) {
     cb(job);
   });
 }
+
+jobSchema.statics.userUpdate = function(data, cb) {
+  this.model('Job').findById(data.id).exec(function(err, job) {
+    if (err) throw err;
+    job.title = data.title || job.title;
+    job.mode = data.mode || job.mode;
+    job.width = data.width || job.width;
+    job.height = data.height || job.height;
+    job.format = data.format || job.format;
+    job.save();
+    cb(job);
+  });
+}
+
 
 jobSchema.statics.get = function(limit, page, cb) {
   this.model('Job').find()
@@ -173,6 +187,7 @@ jobSchema.statics.getTopSamples = function(cb) {
       }
     }
   }).exec(function(err, job) {
+    console.log(job.samples);
     cb(job.samples.reverse());
   });
 }

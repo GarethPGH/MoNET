@@ -14,7 +14,7 @@ block content
       figure.wc(class= "#{work.status}")
         .row
           .col-md-12
-            h2.fp-edit(title-for="#{work._id}")= work.title || 'untitled' 
+            h2.title-edit(title-for="#{work._id}")= work.title || 'untitled' 
             p
               strong Started
               |  #{work.date}
@@ -127,5 +127,5 @@ block content
   link(rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/ui-lightness/jquery-ui.min.css")
 
   script(src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js" integrity="sha256-xNjb53/rY+WmG+4L6tTl9m6PpqknWZvRt0rO1SRnJzw=" crossorigin="anonymous")
-
+  script(src="//cdn.tinymce.com/4/tinymce.min.js")
   script(src="/javascripts/works.js")

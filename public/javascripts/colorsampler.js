@@ -115,9 +115,9 @@ $(document).ready(function() {
     var length = data.length;
 
     var rgb = {
-      r: 0,
-      g: 0,
-      b: 0
+      red: 0,
+      green: 0,
+      blue: 0
     };
 
     var i = -4,
@@ -126,18 +126,18 @@ $(document).ready(function() {
 
     while ((i += blockSize * 4) < length) {
       ++count;
-      rgb.r += data[i];
-      rgb.g += data[i + 1];
-      rgb.b += data[i + 2];
+      rgb.red += data[i];
+      rgb.green += data[i + 1];
+      rgb.blue += data[i + 2];
     }
 
 
     // ~~ used to floor values
-    rgb.r = ~~(rgb.r / count);
-    rgb.g = ~~(rgb.g / count);
-    rgb.b = ~~(rgb.b / count);
+    rgb.red = ~~(rgb.red / count);
+    rgb.green = ~~(rgb.green / count);
+    rgb.blue = ~~(rgb.blue / count);
 
-    $('body').css("background-color", "rgb(" + rgb.r + "," + rgb.g + "," + rgb.b + ")");
+    $('body').css("background-color", "rgb(" + rgb.red + "," + rgb.green + "," + rgb.blue + ")");
     $('#message').html("Great! If you like your color, add it to the wall. If not choose or take a new picture.")
     $('#add-cell').show();
     $('#file-holder').removeClass('btn-danger').addClass('btn-info');

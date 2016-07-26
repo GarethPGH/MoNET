@@ -207,21 +207,33 @@ router.put('/private/:dest', function(req, res, next) {
           //console.log(data);
           switch (data.action) {
             case "add":
-              Job.create( function(job) {
-                //console.log(job);
+              Job.create(function(job) {
+                res.send({
+                  result: "success"
+                });
               });
               break;
             case "play":
               Job.play(data.id, function(job) {
-                //console.log(job);
+                res.send({
+                  result: "success"
+                });
               });
               break;
             case "pause":
               Job.pause(data.id, function(job) {
-                //console.log(job);
+                res.send({
+                  result: "success"
+                });
               });
               break;
-
+            case "update":
+              Job.userUpdate(data, function(job) {
+                res.send({
+                  result: "success"
+                });
+              });
+              break;
           }
           break;
 
