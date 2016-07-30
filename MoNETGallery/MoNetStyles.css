@@ -1,0 +1,69 @@
+﻿
+body {
+  
+}
+/*Page Banner*/
+#primary{
+  background-color:rgba(255, 250, 220, 0.5);
+}
+#banner{
+    background-color: rgba(255, 150, 0, 0.5);
+    padding-top:1vw;
+    padding-bottom:1vw;
+    display:flex;
+    justify-content:center;
+}
+
+.thumbnails {
+    width:75px;
+    height:100px;
+    margin:5px;
+    /*This border needs fixed. Messes with thumbnail appearence*/
+    border: solid;
+    border-color: black;
+    float:left;
+   
+}
+.thumbalign{
+    width:25vw;
+    float:left;
+    margin-top:10vw;
+    margin-left: 5vw;
+  
+}
+.thumbrow{
+    width: inherit;
+    margin-right:10vw;
+}
+
+
+
+#Frame{
+    /*This border is temporary, until we get page set up and camera image centered on it properly*/
+    height:50vw;
+    width: 50vw;
+   /*
+       Commenting these out for clean viewing, but may be masking bigger problem that needs fixed.
+        border:solid;
+    border-color: black;*/
+    margin-top:2vw;
+    margin-left: 5vw;
+    margin-right: 5vw;
+    margin-bottom: 3vw;
+    float:right;
+
+}
+#Painting{
+    /*Border styles are being implemented here even though I dont have them listed*/
+    width:inherit;
+    height:inherit;
+    justify-content:center;
+}
+
+#Next{
+    
+}
+
+#Previous{
+  
+}

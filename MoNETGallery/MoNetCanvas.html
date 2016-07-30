@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MoNET Canvas</title>
+
+    <script src="Scripts/jquery-2.2.3.min.js"></script>
+    <script type="text/javascript" src="Scripts/TestResponsiveness.js"></script>
+    <script type="text/javascript" src="Scripts/LoadThumbnails.js"></script>
+    <script type="text/javascript" src="Scripts/thumbview.js"></script>
+    <script type="text/javascript" src="Scripts/gallerypreview.js"></script>
+  
+   
+
+    <link rel="stylesheet" type="text/css" href="MoNetStyles.css" />
+    <link href='https://fonts.googleapis.com/css?family=Bungee+Inline' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+   
+    
+</head>
+<body id="primary">
+        <div class="container-fluid" id="banner">
+            <img id="bannerImg" src="Images/gallerytitlebanner.png" />
+            
+        </div>
+    <!--TestResponsivness.js will need to be fixed so that thumbnails appear good on small screens, 
+        Or Thumbnails fixed so TestResponsiveness changes their size as well?
+        Possible mobile only site added?-->
+    <div class="thumbalign">
+        <div class="thumbrow" >
+            <div class="thumbnails"  onclick="changeImage(event)">
+                <!--add onclick to html elements -->
+                <img height="100" width="75" src="" />
+            </div>
+            <div class="thumbnails"  onclick="changeImage(event)">
+                <!-- a preview image here -->
+                <img height="100" width="75" src="" />
+            </div>
+            <div class="thumbnails"  onclick="changeImage(event)">
+                <!-- a preview image here -->
+                <img height="100" width="75" src="" />
+            </div>
+        </div>
+        <div class="thumbrow">
+            <div class="thumbnails"  onclick="changeImage(event)">
+                <!-- a preview image here -->
+                <img height="100" width="75" src="" />
+            </div>
+            <div class="thumbnails"  onclick="changeImage(event)">
+                <!-- a preview image here -->
+                <img height="100" width="75" src="" />
+            </div>
+            <div class="thumbnails"  onclick="changeImage(event)">
+                <!-- a preview image here -->
+                <img height="100" width="75" src="" />
+            </div>
+        </div>
+        <div class="thumbrow">
+            <div class="thumbnails"  onclick="changeImage(event)">
+                <!-- a preview image here -->
+                <img height="100" width="75" src="" />
+            </div>
+            <div class="thumbnails"  onclick="changeImage(event)">
+                <!-- a preview image here -->
+                <img height="100" width="75" src="" />
+            </div>
+            <div class="thumbnails"  onclick="changeImage(event)">
+                <!-- a preview image here -->
+                <img height="100" width="75" src="" />
+            </div>
+        </div>
+        <div class="thumbrow">
+            <div class="thumbnails" onclick="changeImage(event)">
+                <!-- a preview image here -->
+                <img height="100" width="75" src="" />
+            </div>
+            <div class="thumbnails" onclick="changeImage(event)">
+                <!-- a preview image here -->
+                <img height="100" width="75" src="" />
+            </div>
+            <div class="thumbnails" onclick="changeImage(event)">
+                <!-- a preview image here -->
+                <img height="100" width="75" src="" />
+            </div>
+            <div class="thumbnails" onclick="changeImage(event)">
+                <!-- a preview image here -->
+                <img height="100" width="75" src="" />
+            </div>
+            <div class="thumbnails" onclick="changeImage(event)">
+                <!-- a preview image here -->
+                <img height="100" width="75" src="" />
+            </div>
+
+    </div> 
+        <div>
+            <ul>
+                <li><a href="#" id="Previous"><img src="Images/attractivearrow.png" height="50" width="75" /></a></li>
+
+                <li><a href="#" id="Next"><img src="Images/attractivearrowr.png" height="50" width="75"/></a></li>
+            </ul>
+        </div>
+        
+    </div>
+  
+   
+    <div class="container-fluid" id="Frame">
+        <div class="row">
+            <div id="Frame">
+                <img id="Painting"/>
+               
+            </div>
+        </div>
+    </div>
+ 
+    <div><!--create a About the project, or at least an about the robot section that pops up on mouseclick, perhaps add a contact us section--></div>
+</body>
+</html>
