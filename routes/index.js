@@ -60,7 +60,7 @@ router.get('/colorwall', function(req, res, next) {
 });
 
 router.get('/gallery', function(req, res, next) {
-  res.sendfile('public/gallery/MoNetCanvas.html');
+  res.sendfile('MoNETGallery/MoNetCanvas.html');
 });
 
 
