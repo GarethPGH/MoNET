@@ -16,7 +16,7 @@ var socketIO = require('../sockets');
  */
 
 var port = normalizePort(env.NODE_PORT || env.OPENSHIFT_NODEJS_PORT || '3000');
-var ip = env.NODE_IP || env.OPENSHIFT_NODEJS_IP || 'localhost';
+var ip = env.NODE_IP || env.OPENSHIFT_NODEJS_IP || '192.168.1.7';
 app.set('port', port);
 app.set('ip', ip);
 

@@ -12,6 +12,11 @@ var color = {
   blue: 255
 };
 
+var motor = {
+  direction : 'cw',
+  steps: 10000
+}
+
 var calibration = {
   red: 0,
   green: 0,
@@ -80,10 +85,17 @@ router.get('/simulator', function(req, res, next) {
 
 router.get('/sample/:red/:green/:blue', function(req, res, next) {
   //console.log(req.params);
-  color = req.params;
+  var color = req.params;
   res.set('Content-Type', 'application/json');
   res.send(calibration);
   calibration.reset();
+});
+
+router.get('/motor/:direction', function(req, res, next) {
+  //console.log(req.params);
+  motor.direction = req.params.direction == 'cw' ? 'ccw' : 'cw';
+  res.set('Content-Type', 'application/json');
+  res.send(motor);
 });
 
 router.get('/color', function(req, res, next) {
