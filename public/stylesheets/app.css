@@ -184,3 +184,44 @@ a:hover {
 
 .in-small {
   width: 100%; }
+
+#status-bar {
+  padding-bottom: 0.1em;
+  padding-top: 0.2em;
+}
+
+#wifi-icons {
+  width: 100%;
+  display: inline-block;;
+}
+
+.pos-holder {
+  font-size:400%;
+}
+
+.pos-header {
+  padding-top: 5%;
+}
+
+.sidebar {
+  font-size:66%;
+}
+
+.splotch.first {
+  border: 3px solid #333;
+  border-width: 3px 3px 0 3px;
+}
+
+.splotch.middle {
+  border: 3px solid #333;
+  border-width: 0 3px 0 3px;
+}
+
+.splotch.last {
+  border: 3px solid #333;
+  border-width: 0 3px 3px 3px;
+}
+
+.color-chan-label {
+  text-align: right;
+}

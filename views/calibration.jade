@@ -1,0 +1,31 @@
+extends layout
+
+block content
+  .container-fluid(style="height: 100%;")
+    #about.row.light-orange(style="min-height: 100%;")
+      .col-sm-8.col-sm-offset-2
+        h2 Use this page to enter calibrations for the robot.
+        form#calForm.form-horizontal
+          .form-group
+            label.col-sm-4.control-label(for="xCal") X motor calibration (steps per inch)
+            .col-sm-4
+              input.form-control(type="number" name="xCal" value=calibration.xCal)
+          .form-group
+            label.col-sm-4.control-label(for="yCal") Y motor calibration (steps per inch)
+            .col-sm-4
+              input.form-control(type="number" name="yCal" value=calibration.yCal)
+          .form-group
+            label.col-sm-4.control-label(for="paintSpeed") Painting speed (low is fast)
+            .col-sm-4
+              input.form-control(type="number" name="paintSpeed" value=calibration.paintSpeed)
+          .form-group
+            .col-sm-4.col-sm-offset-4
+              button#save.btn.btn-success(type="submit") Save
+        
+   
+                      
+  include js.jade
+  
+  script(src="/javascripts/formhandler.js")
+  script(src="/javascripts/calibration.js")
+  

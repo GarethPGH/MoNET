@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  canvas#canvas(style="display: none; height: 500px; width: 500px")
+  .site-wrapper
+    .site-wrapper-inner
+      .cover-container
+        .inner.cover.text-center
+          img(src="/images/color_sampler.png")
+          h2#message.normal This page is really boring. Take or select a picture to extract its color and then add it to the painting.
+          p#add-cell.normal(style="display:none")
+            button#add.btn.btn-warning.btn-lg.normal Add it to the wall!
+          label#file-holder.btn.btn-lg.btn-file.btn-info.normal
+            span Get a color
+            input.btn.btn-default#camera(type='file' accept='image/*' capture='camera' style="display:none" data-maxwidth="500" data-maxheight="500")
+          h2.limit(style="display:none") Because of some hacky stuff we had to do to make this work, the page requires a reset before you can sample another picture. Sorry :(
+          p.limit(style="display:none")
+            button#reload.btn.btn-danger.btn-lg Reset
+    #preview(style="display:none")
+
+
+  include js.jade
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.10.2/paper-full.min.js")
+  script(src="/socket.io/socket.io.js")
+  script(src="/javascripts/colorsampler.2.js")
+
+  

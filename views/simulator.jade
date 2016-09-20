@@ -24,6 +24,8 @@ block content
         y : Math.floor(Math.random() * (1000))
       }
       
+      console.log("color sent");
+      
       socket.emit('new color', color);
       setTimeout(sendColor, 2000);
     }

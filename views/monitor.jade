@@ -1,0 +1,84 @@
+extends layout
+
+block content
+  .container-fluid.med-orange(style="font-size:200%; min-height:100%")
+    .row#status-row.inverse
+      .col-sm-3
+        span#wifi-icons.label.label-info
+          i.fa.fa-wifi 
+          span#wifi
+      .col-sm-9#status-bar
+        p#status-mess Connecting ...
+    .row
+      .col-sm-7
+        .row
+          .col-sm-1.pos-header  
+            strong X:
+          .col-sm-8.pos-holder
+            span.pull-right#xPos 0 
+          .col-sm-3.pos-header 
+              span steps <br>
+              span 125"
+        .row
+          .col-sm-1.pos-header 
+            strong Y:
+          .col-sm-8.pos-holder
+            span.pull-right#yPos 0 
+          .col-sm-3.pos-header 
+              span steps <br>
+              span 125"              
+      .col-sm-5.sidebar
+        .row
+          .col-sm-3
+            div &nbsp;
+            .color-chan-label X:
+            .color-chan-label Y:
+            .color-chan-label Speed: 
+          .col-sm-4
+            div Destination
+            #xdest 15000 (47")
+            #ydest 25000 (47")
+            #speed 25000 
+          .col-sm-4
+            div Limit
+            #xlim 40000 (96")
+            #ylim 25000 (48")
+
+        .row
+          .col-sm-3.color-swatch
+            div &nbsp;
+            div &nbsp;
+            .color-chan-label C: 
+            .color-chan-label Y: 
+            .color-chan-label M: 
+            .color-chan-label K:
+            .color-chan-label W: 
+          .col-sm-2.color-swatch
+            div &nbsp;
+            div Color
+            #c 0 
+            #y 0 
+            #m 0 
+            #k 0
+            #w 0
+          .col-sm-4.color-swatch
+            div &nbsp;
+            div &nbsp;
+            .splotch.first &nbsp;
+            .splotch.middle &nbsp;
+            .splotch.middle &nbsp;
+            .splotch.middle &nbsp;
+            .splotch.last &nbsp;
+          .col-sm-3.color-swatch
+    
+    #alert-box.modal.fade.bs-example-modal-sm(tabindex=-1 role="dialog" aria-labelledby="mySmallModalLabel")
+      .modal-dialog.modal-sm(role="document")
+        .modal-content
+          .modal-header
+            button.close(type="button" data-dismiss="modal" aria-label="Close")
+              span &times;
+          
+  include js.jade
+
+  script(src="/socket.io/socket.io.js")
+  script(src="/javascripts/monitor.js")

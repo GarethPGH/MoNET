@@ -14,6 +14,7 @@ var MongoStore = require('connect-mongo/es5')(session);
 var FacebookStrategy = require('passport-facebook').Strategy;
 
 
+
 if (!process.env.OPENSHIFT_MONGODB_DB_PASSWORD) {
   var config = require('./config');
 }
@@ -55,6 +56,9 @@ app.use(
 );
 
 app.use(express.static(path.join(__dirname, 'public')));
+
+
+
 
 var User = require('./models/models.js').User;
 

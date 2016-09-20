@@ -2,37 +2,12 @@ var express = require('express');
 var router = express.Router();
 var parser = require('parse-rss');
 var passport = require('passport');
-
 var Sample = require('../models/models.js').Sample;
 var Job = require('../models/models.js').Job;
+var Status = require('../models/models.js').Status;
+var Calibration = require('../models/models.js').Calibration;
 
-var color = {
-  red: 255,
-  green: 255,
-  blue: 255
-};
-
-var motor = {
-  direction : 'cw',
-  steps: 10000
-}
-
-var calibration = {
-  red: 0,
-  green: 0,
-  blue: 0,
-  gain: 0,
-  time: 0,
-  setwhite: 0,
-  reset: function() {
-    this.red = 0;
-    this.green = 0;
-    this.blue = 0;
-    this.gain = 0;
-    this.time = 0;
-    this.setwhite = 0;
-  }
-};
+var currentCommandId = 1;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -52,17 +27,9 @@ router.get('/', function(req, res, next) {
   });
 });
 
-router.get('/colorwall', function(req, res, next) {
-  res.render('colorwall', {
-    title: 'Project MoNET:Colorwall',
-    route: "index"
-  });
-});
-
 router.get('/gallery', function(req, res, next) {
   res.sendfile('MoNETGallery/MoNetCanvas.html');
 });
-
 
 
 router.get('/colorwall1', function(req, res, next) {
@@ -99,8 +66,83 @@ router.get('/motor/:direction', function(req, res, next) {
 });
 
 router.get('/color', function(req, res, next) {
-  res.render('color', {
+  res.render('color2', {
     title: 'Project MoNET:Color Sampler'
+  });
+});
+
+router.get('/monitor', function(req, res, next) {
+  res.render('monitor', {
+    title: 'Project MoNET:Robot Monitor'
+  });
+});
+
+
+/*We're using funky dot notation for incoming messages from the robot. We're just going to stick everything in one request.
+  This will serve three purposes:
+    -give next command to the robot as a response.
+    -mark the previous command as finished
+    -update periodic/emergency status
+*/
+
+            //robotcontol/mowpjf38qe.fetch  .0         .0    .0    .0    .0    .0    .0    .429495  .4294995 .0     .0     .-60    .1
+router.get('/robotcontol/:hardwareID.:action.:commandId.:xPos.:yPos.:xLimMax.:yLimMax.:signal.:status', function(req ,res, next) {
+  console.log(req.params);
+  res.set('Content-Type', 'application/json');
+  if(req.params.hardwareID == "mowpjf38qe") {
+    Status.updateStatus( req.params, function (err, status) {
+      console.log(status.message);
+    if( req.params.action == "status") {
+      console.log("got status");
+      res.send("OK");
+    } else {
+      if(req.params.action == "complete") {
+        console.log("Command " + req.params.commandId + " marked as complete");
+      }
+      // this needs to be replaced with logic to get the next incomplete command and send it
+      currentCommandId++;
+      var command = {
+            cr: 1,
+            cid : currentCommandId,
+            x : parseInt(Math.random() * req.params.xLimMax), //x destination
+            y : parseInt(Math.random() * req.params.yLimMax), //y destination
+            s : 400, //speed at which the steppers will move for this command
+            r : 123, //paint pump rates
+            g : 123,
+            b : 123,
+            w : 123,
+            k : 123,
+            m : 123,
+            d : 123,
+            cl : 123
+        };
+        res.send(command);
+      }
+    });
+
+  } else {
+    res.send("Invalid HardwareID!");
+  }
+});
+
+//Move calibration into private area.
+router.get('/calibration', function(req, res, next) {
+  Calibration.findUpdateOrCreate(null, function( err, cal ) {
+      if(err) console.log(err);
+      res.render('calibration', {
+        title: 'Project MoNET:Calibrator',
+        calibration : cal
+      });
+  });
+});
+
+router.put('/calibration', function(req, res, next) {
+  var data = req.body;
+  Calibration.findUpdateOrCreate(data, function( err, cal ) {
+      if(err) console.log(err);
+      res.send({
+        result: "success"
+      });
   });
 });
 
@@ -197,7 +239,7 @@ router.put('/private/:dest', function(req, res, next) {
           User.update(data, function(status) {
             res.send({
               result: status
-            })
+            });
           });
           break;
 

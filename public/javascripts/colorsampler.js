@@ -43,7 +43,7 @@ $(document).ready(function() {
         newinput.name = 'images[]';
         newinput.value = resized; // put result from canvas into new hidden input
         form.appendChild(newinput);
-      }
+      };
     };
   }
 
