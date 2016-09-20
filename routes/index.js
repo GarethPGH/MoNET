@@ -71,6 +71,12 @@ router.get('/color', function(req, res, next) {
   });
 });
 
+router.get('/portrait', function(req, res, next) {
+  res.render('points', {
+    title: 'Project MoNET:Portrait Creator'
+  });
+});
+
 router.get('/monitor', function(req, res, next) {
   res.render('monitor', {
     title: 'Project MoNET:Robot Monitor'
