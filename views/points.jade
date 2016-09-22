@@ -1,21 +1,45 @@
 extends layout
 
 block content
-  canvas#canvas(style=" height: 480px; width: 960px")
-  .site-wrapper
+  .site-wrapper.monetize-control-panel.controls(style = "display : none")
+    .site-wrapper-inner
+      p.text-center
+        canvas#canvas(style=" height: 500px; width: 1000px")
+      .cover-container
+        .inner-cover.controls#image-controls
+          p Set the canvas size and image size using the sliders below. You may drag the image to align it how you want on the canvas.
+          p#canvas-width Canvas Width 96"
+          p
+            #slider-xsize
+          p#canvas-height Canvas Height 48"
+          p
+            #slider-ysize
+          p#pic-size Picture Size 100%
+          p
+            #slider-picsize
+          p#pic-rotate Picture Rotation 0&deg;
+          p
+            #slider-rotate
+          p.text-center
+            button.btn-large#monetize MoNETize!
+        .inner-cover#processing(style = "display:none")
+          H1.controls 
+            span
+              i.fa.fa-cog.fa-spin.fa-fw.fa-1x
+              span Processing ...
+
+
+
+  .site-wrapper#splash
     .site-wrapper-inner
       .cover-container
-        .inner.cover.text-center
+        .inner.cover.text-center      
           img(src="/images/color_sampler.png")
-          h2#message.normal This page is really boring. Take or select a picture to extract its color and then add it to the painting.
+          h2#message.normal This page allows you to take or upload a picture and convert it into a paint map for the robot.
           p#add-cell.normal(style="display:none")
-            button#add.btn.btn-warning.btn-lg.normal Add it to the wall!
           label#file-holder.btn.btn-lg.btn-file.btn-info.normal
-            span Get a color
+            span Get a Picture
             input.btn.btn-default#camera(type='file' accept='image/*' capture='camera' style="display:none" data-maxwidth="960" data-maxheight="480")
-          h2.limit(style="display:none") Because of some hacky stuff we had to do to make this work, the page requires a reset before you can sample another picture. Sorry :(
-          p.limit(style="display:none")
-            button#reload.btn.btn-danger.btn-lg Reset
     #preview(style="display:none")
 
 
@@ -23,5 +47,5 @@ block content
   script(src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.10.2/paper-full.min.js")
   script(src="/socket.io/socket.io.js")
   script(src="/javascripts/points.js")
-
+  script(src="https://code.jquery.com/ui/1.12.1/jquery-ui.js")
   

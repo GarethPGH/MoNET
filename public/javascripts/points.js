@@ -14,6 +14,41 @@ $(document).ready(function() {
 
   var form = document.getElementById('file-holder');
 
+  var image;
+
+  var raster;
+  var origHeight;
+  var origWidth;
+
+  var rectFrame;
+
+  var frame;
+  var frame2;
+
+  function refreshFrame() {
+    rectFrame.center = paper.view.center;
+    if(typeof(frame) !== 'undefined') {
+      frame.remove();
+    }
+    if(typeof(frame2) !== 'undefined') {
+      frame2.remove();
+    }
+    frame2 = new paper.Path.Rectangle(rectFrame);
+    frame2.strokeWidth = 2;
+    frame2.strokeColor = 'white';
+
+
+    frame = new paper.Path.Rectangle(rectFrame);
+    frame.strokeWidth = 2;
+    frame.strokeColor = 'black';
+    frame.dashArray = [10,4];
+
+    frame.position = paper.view.center;
+    frame2.position = paper.view.center;
+
+  }
+
+
   function processfile(file) {
 
     if (!(/image/i).test(file.type)) {
@@ -32,7 +67,7 @@ $(document).ready(function() {
       var blobURL = window.URL.createObjectURL(blob); // and get it's URL
 
       // helper Image object
-      var image = new Image();
+      image = new Image();
       image.src = blobURL;
       preview.appendChild(image); // preview commented out, I am using the canvas instead
       image.onload = function() {
@@ -40,35 +75,33 @@ $(document).ready(function() {
     		// Create an empty project and a view for the canvas:
     		paper.setup(canvas);
 
-        var raster = new paper.Raster({source: image.src});
+        raster = new paper.Raster({source: image.src});
 
         raster.on('load', function () {
           var width = raster.size.width;
           var height = raster.size.height;
 
-          // calculate the width and height, constraining the proportions
-          if (width > height) {
-            if (width > max_width) {
-              //height *= max_width / width;
-              height = Math.round(height *= max_width / width);
-              width = max_width;
-            }
-          } else {
-            if (height > max_height) {
-              //width *= max_height / height;
-              width = Math.round(width *= max_height / height);
-              height = max_height;
-            }
-          }
+          origHeight = height;
+          origWidth = width;
 
-          raster.height = height/5;
-          raster.width = width/5;
-          raster.visible = false;
-          //raster.position = new paper.Point(width/2,height/2);
+          raster.position = paper.view.center;
 
-          console.log(raster.position);
-          console.log(raster.size);
+          rectFrame = new paper.Rectangle(0,0,960,480);
+          refreshFrame();
 
+          var tool = new paper.Tool();
+
+          // Define a mousedown and mousedrag handler
+        		tool.onMouseDown = function(event) {
+              raster.position = event.point;
+        		};
+
+        		tool.onMouseDrag = function(event) {
+        			raster.position = event.point;
+        		};
+
+
+          /*
           for (var y = raster.position.y; y < raster.size.height; y++) {
         		for(var x = raster.position.x; x < raster.size.width; x++) {
         			// Get the color of the pixel:
@@ -88,6 +121,7 @@ $(document).ready(function() {
         		}
         	}
           raster.remove();
+          */
           paper.view.draw();
 
           $('#message').html("Great! If you like your color, add it to the wall. If not choose or take a new picture.");
@@ -127,7 +161,8 @@ $(document).ready(function() {
         //newinput.name = 'images[]';
         //newinput.value = resized; // put result from canvas into new hidden input
         //form.appendChild(newinput);
-
+        console.log(raster);
+        return raster;
       };
     };
   }
@@ -152,23 +187,59 @@ $(document).ready(function() {
 
   // this is where it starts. event triggered when user selects files
   fileinput.onchange = function() {
-    $('#file-holder').removeClass('btn-info').addClass('btn-danger');
-    $('#file-holder span').html('Processing ...');
-    if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
-      alert('The File APIs are not fully supported in this browser.');
-      return false;
-    }
-    readfiles(fileinput.files);
+    $("#splash").slideUp();
+    $(".controls").slideDown( function () {
+      $('#file-holder').removeClass('btn-info').addClass('btn-danger');
+      $('#file-holder span').html('Processing ...');
+      if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
+        alert('The File APIs are not fully supported in this browser.');
+        return false;
+      }
+      readfiles(fileinput.files);
+    });
   };
+
+
+  function monetize() {
+    console.log(rectFrame);
+
+    var tempRaster = raster.rasterize();
+
+    tempRaster.on('load', function () {
+      var rastRec = tempRaster.bounds;
+      console.log(rastRec);
+
+
+      for (var y = rectFrame.topLeft.y; y <= rectFrame.size.height + rectFrame.topLeft.y; y += 5) {
+        for(var x = rectFrame.topLeft.x; x <= rectFrame.size.width + rectFrame.topLeft.x; x += 5) {
+          // Get the color of the pixel:
+          var dotColor = tempRaster.getPixel(((rastRec.topLeft.x * -1 ) + x) * 2, ((rastRec.topLeft.y * -1 ) + y ) * 2);
+          //console.log(dotColor);
+          // Create a circle shaped path:
+          var path = new paper.Path.Circle({
+            center: new paper.Point(x, y),
+            radius: 3
+          });
+
+          // Set the fill color of the path to the color
+          // of the pixel:
+          path.fillColor = dotColor;
+        }
+      }
+      tempRaster.remove();
+
+    });
+
+    tempRaster.remove();
+    raster.remove();
+
+  }
 
 
   $('#add').click(function() {
     socket.emit('new color', color);
   });
 
-  $('#reload').click(function() {
-    location.reload();
-  });
 
   socket.on('add success', function(id) {
     window.location.href = "/colorwall1?id=" + id;
@@ -176,6 +247,63 @@ $(document).ready(function() {
 
   socket.on('message', function(message) {
     console.log(message);
+  });
+
+  $( "#slider-xsize" ).slider({
+    value:96,
+    min: 6,
+    max: 96,
+    step: 0.5,
+    slide: function( event, ui ) {
+      $('#canvas-width').html('Canvas Width ' + ui.value + '"');
+      rectFrame.size.width = ui.value * 10;
+      refreshFrame();
+
+    }
+  });
+
+  $( "#slider-ysize" ).slider({
+    value:48,
+    min: 6,
+    max: 48,
+    step: 0.5,
+    slide: function( event, ui ) {
+      $('#canvas-height').html('Canvas Height ' + ui.value + '"');
+      rectFrame.size.height = ui.value * 10;
+      refreshFrame();
+
+    }
+  });
+
+  $( "#slider-picsize" ).slider({
+    value:100,
+    min: 1,
+    max: 200,
+    step: 1,
+    slide: function( event, ui ) {
+      $('#pic-size').html('Picture Size ' + ui.value + '%');
+      raster.scale((ui.value/100)/raster.scaling.x);
+
+    }
+  });
+
+  $('#monetize').click( function () {
+    $('#image-controls').slideUp();
+    $('#processing').slideDown( function () {
+      monetize();
+    });
+  });
+
+  $( "#slider-rotate" ).slider({
+    value:0,
+    min: -180,
+    max: 180,
+    step: 1,
+    slide: function( event, ui ) {
+      $('#pic-rotate').html('Picture Rotation ' + ui.value + '&deg;');
+      raster.rotate(ui.value - raster.rotation);
+
+    }
   });
 
 });
