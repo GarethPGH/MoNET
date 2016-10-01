@@ -107,20 +107,22 @@ router.get('/robotcontol/:hardwareID.:action.:commandId.:xPos.:yPos.:xLimMax.:yL
       }
       // this needs to be replaced with logic to get the next incomplete command and send it
       currentCommandId++;
+      var paintTop = 255;
+
       var command = {
             cr: 1,
             cid : currentCommandId,
             x : parseInt(Math.random() * req.params.xLimMax), //x destination
             y : parseInt(Math.random() * req.params.yLimMax), //y destination
-            s : 400, //speed at which the steppers will move for this command
-            r : 123, //paint pump rates
-            g : 123,
-            b : 123,
-            w : 123,
-            k : 123,
-            m : 123,
-            d : 123,
-            cl : 123
+            s : 5000, //speed at which the steppers will move for this command
+            r : 255,//parseInt(Math.random() * paintTop), //paint pump rates
+            g : 255,//parseInt(Math.random() * paintTop),
+            b : 0,//parseInt(Math.random() * paintTop * 0.25),
+            w : 150,
+            k : 0,//parseInt(Math.random() * paintTop) * 0.25,
+            m : 0,
+            d : 255,
+            cl : 255
         };
         res.send(command);
       }
