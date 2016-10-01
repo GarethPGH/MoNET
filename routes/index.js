@@ -100,7 +100,7 @@ router.get('/robotcontol/:hardwareID.:action.:commandId.:xPos.:yPos.:xLimMax.:yL
       console.log(status.message);
     if( req.params.action == "status") {
       console.log("got status");
-      res.send("OK");
+      res.json("OK");
     } else {
       if(req.params.action == "complete") {
         console.log("Command " + req.params.commandId + " marked as complete");
@@ -124,12 +124,12 @@ router.get('/robotcontol/:hardwareID.:action.:commandId.:xPos.:yPos.:xLimMax.:yL
             d : 255,
             cl : 255
         };
-        res.send(command);
+        res.json(command);
       }
     });
 
   } else {
-    res.send("Invalid HardwareID!");
+    res.json("Invalid HardwareID!");
   }
 });
 
