@@ -100,7 +100,7 @@ router.get('/robotcontol/:hardwareID.:action.:commandId.:xPos.:yPos.:xLimMax.:yL
       console.log(status.message);
     if( req.params.action == "status") {
       console.log("got status");
-      res.json("OK");
+      res.json({message : "OK"});
     } else {
       if(req.params.action == "complete") {
         console.log("Command " + req.params.commandId + " marked as complete");
@@ -129,7 +129,7 @@ router.get('/robotcontol/:hardwareID.:action.:commandId.:xPos.:yPos.:xLimMax.:yL
     });
 
   } else {
-    res.json("Invalid HardwareID!");
+    res.json({ message : "Invalid HardwareID!" });
   }
 });
 
