@@ -39,7 +39,8 @@ var commandSchema = new Schema({
   y: { type: Number },
   dispense : {type : Boolean},
   speed: { type: Number },
-  complete: { type: String }
+  complete: { type: String },
+  paintMultiplier : { type: Number, default : 10 }
 });
 
 commandSchema.pre('save', function(next) {
@@ -184,11 +185,19 @@ commandSchema.statics.next = function (prevCmd, cb) {
               return p.commandId - e.commandId;
             });
 
-          cb(err, commands[0]);
+          var cmd = commands[0];
+
+          cmd['paintMultiplier'] = job.paintMultiplier;
+          cmd.speed = job.speed;
+
+          cb(err, cmd);
       });
     }
   }, function (err, result) {
     if(err) throw err;
+    var cmd = result.get;
+    //Update this command as being in processData
+    //mongoose.model('Command').findByIdandUpdate(get.commandId)
     cb(result.get);
   });
 };

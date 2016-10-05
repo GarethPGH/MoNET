@@ -132,6 +132,7 @@ router.get('/robotcontol/:hardwareID.:action.:commandId.:xPos.:yPos.:xLimMax.:yL
 router.get('/cmd/:commandId', function(req, res, next) {
   Command.next(req.params.commandId, function (cmd) {
     Status.ssUpdate(req.params.commandId);
+    console.log(JSON.stringify(cmd));
     res.set('Content-Type', 'application/json');
     if(!cmd) cmd = { message : 'nothing waiting'};
     res.json(cmd);

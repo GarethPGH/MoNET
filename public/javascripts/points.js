@@ -200,39 +200,52 @@ $(document).ready(function() {
   };
 
 
-  function monetize() {
-    console.log(rectFrame);
+  function monetize(callback) {
+
+
 
     var tempRaster = raster.rasterize();
 
-    tempRaster.on('load', function () {
+    var samples = tempRaster.on('load', function () {
       var rastRec = tempRaster.bounds;
-      console.log(rastRec);
 
+      var samples = {
+        width : rectFrame.size.height/10,
+        height : rectFrame.size.width/10,
+        samples : []
+      };
 
-      for (var y = rectFrame.topLeft.y; y <= rectFrame.size.height + rectFrame.topLeft.y; y += 6) {
-        for(var x = rectFrame.topLeft.x; x <= rectFrame.size.width + rectFrame.topLeft.x - 1; x += 6) {
+      for (var y = rectFrame.topLeft.y; y <= rectFrame.size.height + rectFrame.topLeft.y - 1; y += 10) {
+        for(var x = rectFrame.topLeft.x; x <= rectFrame.size.width + rectFrame.topLeft.x - 1; x += 10) {
           // Get the color of the pixel:
           var dotColor = tempRaster.getPixel(((rastRec.topLeft.x * -1 ) + x) * 2, ((rastRec.topLeft.y * -1 ) + y ) * 2);
           //console.log(dotColor);
           // Create a circle shaped path:
           var path = new paper.Path.Circle({
-            center: new paper.Point(x+3, y+3),
-            radius: 3
+            center: new paper.Point(x+5, y+5),
+            radius: 5
           });
 
           // Set the fill color of the path to the color
           // of the pixel:
           path.fillColor = dotColor;
+
+          var data = {
+            x : (x - 15)/10,
+            y : (y - 15)/10,
+            r : dotColor.components[0] * 255,
+            b : dotColor.components[1] * 255,
+            g : dotColor.components[2] * 255,
+          };
+
+          samples.samples.push(data);
         }
       }
       tempRaster.remove();
-
+      raster.remove();
+      console.log(samples);
+      callback(samples);
     });
-
-    tempRaster.remove();
-    raster.remove();
-    return;
   }
 
 
@@ -289,9 +302,11 @@ $(document).ready(function() {
 
   $('#monetize').click( function () {
     $('#image-controls').slideUp();
-    $('#processing').slideDown( function () {
-      monetize();
+    $('#processing').slideDown();
+    monetize(function (samples) {
+      console.log(samples);
     });
+
   });
 
   $( "#slider-rotate" ).slider({
