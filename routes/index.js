@@ -170,8 +170,8 @@ var Page = require('../models/models.js').Page;
 //Private stuff, don't read or the app will break!
 router.get('/private/:dest', function(req, res, next) {
   console.log(req.params.dest);
-  if ( !process.env.NODE_IP || req.user ) {
-    if ( !process.env.NODE_IP || req.user.elevated || req.user.owner ) {
+  if ( !process.env.OPENSHIFT_MONGODB_DB_PASSWORD || req.user ) {
+    if ( !process.env.OPENSHIFT_MONGODB_DB_PASSWORD || req.user.elevated || req.user.owner ) {
       switch (req.params.dest) {
 
           case "users":
@@ -240,8 +240,8 @@ router.get('/private/:dest', function(req, res, next) {
 
 //For updating admin stuff
 router.put('/private/:dest', function(req, res, next) {
-  if ( !process.env.NODE_IP || req.user) {
-    if ( !process.env.NODE_IP || req.user.elevated || req.user.owner) {
+  if ( !process.env.OPENSHIFT_MONGODB_DB_PASSWORD || req.user) {
+    if ( !process.env.OPENSHIFT_MONGODB_DB_PASSWORD || req.user.elevated || req.user.owner) {
       var data = req.body;
 
       switch (req.params.dest) {
