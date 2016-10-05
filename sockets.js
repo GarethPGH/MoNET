@@ -24,9 +24,7 @@ var socketIO = function(server) {
              data: color,
              sample_id: {}
            };
-
-           Sample.create(color, function(sample) {
-             Job.addSample(job, sample);
+           Sample.createRandom(job, color, function(sample) {
              message.sample_id = sample._id;
              socket.emit('add success', sample._id);
              io.sockets.emit('message', message);

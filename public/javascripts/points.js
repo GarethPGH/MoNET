@@ -86,7 +86,7 @@ $(document).ready(function() {
 
           raster.position = paper.view.center;
 
-          rectFrame = new paper.Rectangle(0,0,960,480);
+          rectFrame = new paper.Rectangle(0,0,360,480);
           refreshFrame();
 
           var tool = new paper.Tool();
@@ -210,14 +210,14 @@ $(document).ready(function() {
       console.log(rastRec);
 
 
-      for (var y = rectFrame.topLeft.y; y <= rectFrame.size.height + rectFrame.topLeft.y; y += 5) {
-        for(var x = rectFrame.topLeft.x; x <= rectFrame.size.width + rectFrame.topLeft.x; x += 5) {
+      for (var y = rectFrame.topLeft.y; y <= rectFrame.size.height + rectFrame.topLeft.y; y += 6) {
+        for(var x = rectFrame.topLeft.x; x <= rectFrame.size.width + rectFrame.topLeft.x - 1; x += 6) {
           // Get the color of the pixel:
           var dotColor = tempRaster.getPixel(((rastRec.topLeft.x * -1 ) + x) * 2, ((rastRec.topLeft.y * -1 ) + y ) * 2);
           //console.log(dotColor);
           // Create a circle shaped path:
           var path = new paper.Path.Circle({
-            center: new paper.Point(x, y),
+            center: new paper.Point(x+3, y+3),
             radius: 3
           });
 
@@ -232,7 +232,7 @@ $(document).ready(function() {
 
     tempRaster.remove();
     raster.remove();
-
+    return;
   }
 
 
@@ -250,9 +250,9 @@ $(document).ready(function() {
   });
 
   $( "#slider-xsize" ).slider({
-    value:96,
+    value:36,
     min: 6,
-    max: 96,
+    max: 36,
     step: 0.5,
     slide: function( event, ui ) {
       $('#canvas-width').html('Canvas Width ' + ui.value + '"');

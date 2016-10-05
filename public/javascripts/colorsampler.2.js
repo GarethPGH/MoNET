@@ -134,6 +134,7 @@ $(document).ready(function() {
 
 
   $('#add').click(function() {
+    console.log(color);
     socket.emit('new color', color);
   });
 
@@ -142,7 +143,10 @@ $(document).ready(function() {
   });
 
   socket.on('add success', function(id) {
-    window.location.href = "/colorwall1?id=" + id;
+    $('#message').html("Your color has been added to the painting queue. Thanks for helping us create this work of art!");
+    $('#file-holder span').html('Add another color!');
+    $('#add').hide();
+
   });
 
   socket.on('message', function(message) {

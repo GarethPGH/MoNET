@@ -28,6 +28,13 @@ $(document).ready(function() {
 
       $('#xPos').html(message.xPos);
       $('#yPos').html(message.yPos);
+      $('#xPosIn').html('' + (message.xPos/message.xLim * message.xLimIn).toFixed(3) + '"');
+      $('#yPosIn').html('' + (message.yPos/message.yLim * message.yLimIn).toFixed(3) + '"');
+      $('#xdest').html('' + parseInt(message.xPosNext/message.xLimIn * message.xLim) + ' (' + message.xPosNext.toFixed(3) + '")');
+      $('#ydest').html('' + parseInt(message.yPosNext/message.yLimIn * message.yLim) + ' (' + message.yPosNext.toFixed(3) + '")');
+      $('#xlim').html('' + message.xLim + ' (' + message.xLimIn + '")');
+      $('#ylim').html('' + message.yLim + ' (' + message.yLimIn + '")');
+      $('#speed').html('' + message.speed);
 
       $('#c').html(message.c);
       $('#y').html(message.y);
@@ -35,10 +42,9 @@ $(document).ready(function() {
       $('#k').html(message.k);
       $('#w').html(message.w);
 
-      var r = 255 * ( 255 - message.c) * (255 - message.k);
-      var g = 255 * ( 255 - message.m) * (255 - message.k);
-      var b = 255 * ( 255 - message.y) * (255 - message.k);
-
+      var r = parseInt( 255 * ( 1 - message.c/255) * (1 - message.k/255));
+      var g = parseInt( 255 * ( 1 - message.m/255) * (1 - message.k/255));
+      var b = parseInt( 255 * ( 1 - message.y/255) * (1 - message.k/255));
       $('.splotch').css('background-color','rgb(' + r + ',' + g + ',' + b + ')');
 
 

@@ -29,7 +29,69 @@ $(document).ready(function() {
             $('input[dataId=' + dataId + '][param=' + param + ']').val($(el).slider('values', 0));
           }
         });
-      })
+      });
+
+      function validateForm (target) {
+
+        var formData = $('form[config-for=' + target + ']').serializeObject();
+
+        var data = {
+          action : 'update',
+          id : target,
+          width : formData.width,
+          height : formData.height,
+          speed : formData.speed,
+          mode : formData.mode,
+          paintMultiplier : formData.paintMultiplier
+        };
+
+        var errors = 0;
+        for (var key in data) {
+          if (data.hasOwnProperty(key)) {
+            if((!data[key] || data[key] == 0 || data[key] === '')) {
+              if( $('[config-for="' + target +'"] input[name="' + key + '"]').is(':enabled'))  {
+                errors++;
+                $('[config-for="' + target +'"] label[for="' + key + '"]').parent('.form-group').addClass('has-error');
+              }
+            } else {
+              $('[config-for="' + target +'"] label[for="' + key + '"]').parent('.form-group').removeClass('has-error');
+            }
+          }
+        }
+        if( errors > 0 ) {
+          return false;
+        } else {
+          return data;
+        }
+      }
+
+      $('.save').click( function (e) {
+        e.preventDefault();
+        var target = $(this).attr('config-for');
+
+        var data = validateForm( target);
+
+        if(data) {
+          var button = $(this);
+          button.addClass("btn-warning");
+          button.html('Saving ...');
+
+              $.ajax({
+                contentType: "application/json",
+                url: '/private/works',
+                type: 'PUT',
+                processData: false,
+                data: JSON.stringify(data),
+                success: function(data) {
+                  button.removeClass("btn-warning");
+                  button.html('Save');
+                  console.log(data);
+                }
+              });
+          }
+      });
+
+
 
       $('#addJob').click(function() {
         var data = {
@@ -52,24 +114,28 @@ $(document).ready(function() {
 
       });
 
+
       $('.wc-play').click(function() {
         var data = {
           action: 'play',
           id: $(this).attr('data-id')
         }
 
-        $.ajax({
-          contentType: "application/json",
-          url: '/private/works/',
-          type: 'PUT',
-          processData: false,
-          data: JSON.stringify(data),
-          success: function(data) {
-            console.log("play",data);
-            location.reload();
-          }
-        });
+        var check = validateForm(data.id);
 
+        if(check) {
+          $.ajax({
+            contentType: "application/json",
+            url: '/private/works/',
+            type: 'PUT',
+            processData: false,
+            data: JSON.stringify(data),
+            success: function(data) {
+              console.log("play",data);
+              location.reload();
+            }
+          });
+        }
         return false;
 
       });

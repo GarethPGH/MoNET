@@ -7,8 +7,29 @@ var mongoose = require('mongoose'),
   Schema = mongoose.Schema,
   ObjectId = Schema.ObjectId;
 
+  var counterSchema = Schema({
+      counterFor: {type: String, required: true},
+      seq: { type: Number, default: 1 }
+  });
+
+  counterSchema.statics.createNewCounter = function (counterFor, cb) {
+    newCounter = new this();
+    console.log(counterFor);
+    newCounter.counterFor = counterFor;
+    newCounter.save( function (err, count) {
+      console.log(count.seq);
+      cb(err, count);
+    });
+  };
+
+
+
+  var counter = mongoose.model('counter', counterSchema);
+
+
 var commandSchema = new Schema({
-  commadId: ObjectId,
+  cid: ObjectId,
+  commandId: {type : Number},
   cyan: { type: Number },
   yellow: { type: Number },
   magenta: { type: Number },
@@ -16,50 +37,164 @@ var commandSchema = new Schema({
   white: { type: Number },
   x: { type: Number },
   y: { type: Number },
-  speed: { type: Number }
+  dispense : {type : Boolean},
+  speed: { type: Number },
+  complete: { type: String }
 });
 
-module.exports.Command = mongoose.model('Command', commandSchema);
-
-var calibrationSchema = new Schema ({
-  xCal : { type : Number },
-  yCal : { type : Number },
-  paintSpeed : { type : Number}
-});
-
-calibrationSchema.statics.findUpdateOrCreate = function(data, cb) {
-  var newCal = new this();
-  this.model('Calibration').findOne().exec(function(err, cal) {
-    if (!err) {
-      if (cal === null) {
-        console.log('create new cal');
-        newCal.xCal = 200;
-        newCal.yCal = 200;
-        newCal.paintSpeed = 10000;
-        newCal.save( function(err, myCal ) {
-            cb(err, myCal);
-            return;
+commandSchema.pre('save', function(next) {
+    var doc = this;
+    counter.findOneAndUpdate({counterFor: "command"}, {$inc: { seq: 1} }, {new : true} , function(err, thisCounter)   {
+      console.log(thisCounter);
+      if(err) return next(err);
+      if( thisCounter === null) {
+        console.log('creating new counter');
+        counter.createNewCounter("command", function( err, newCounter) {
+          if(err) return next(err);
+          console.log(newCounter);
+          doc.commandId = newCounter.seq;
+          next();
         });
-      }
-      if (data === null) {
-        console.log('sending cal');
-        cb(err, cal);
-        return;
       } else {
-        console.log('updating cal');
-        cal.xCal = data.xCal;
-        cal.yCal = data.yCal;
-        cal.paintSpeed = data.paintSpeed;
-        cal.save(function (err, myCal) {
-          cb(err, myCal);
-          return;
-        });
+        doc.commandId = thisCounter.seq;
+        next();
       }
+    });
+});
+
+function passCommand (speed, dispense, sample) {
+  mongoose.model('Command').generateCommand (speed, dispense, sample);
+}
+
+function emptyMove(speed, x, y) {
+  var sample = {
+    red : 0,
+    blue : 0,
+    green : 0,
+    x : x,
+    y: y
+  };
+  passCommand (speed, false, sample);
+}
+
+commandSchema.statics.commandFlow = function (job, sample) {
+  if(typeof job.mode == "undefined" || job.mode == "Random continuous") {
+    passCommand(job.speed, true, sample);
+
+  } else if ( job.mode == "Random lines" ) {
+    async.series([
+      //move some place random first
+      function(callback) {
+        var x = 0.5 + (Math.random() * (job.width - 1));
+        var y = 0.5 + (Math.random() * (job.height - 1));
+        emptyMove(job.speed,x,y);
+        callback(null);
+      },
+      //then draw the sample
+      function(callback) {
+        passCommand(job.speed, true, sample);
+        callback(null);
+      }
+    ]);
+
+  } else if ( job.mode == "Random spots" ) {
+    async.series([
+      //move some place random first
+      function(callback) {
+        emptyMove(job.speed, sample.x - 0.25, sample.y);
+        callback(null);
+      },
+      //then draw the sample
+      function(callback) {
+        sample.x += 0.5;
+        passCommand(job.speed * 4, true, sample);
+        callback(null);
+      }
+    ]);
+
+
+  } else if ( job.mode == "Portrait" ) {
+
+  }
+
+};
+
+commandSchema.statics.generateCommand = function (speed, dispense, sample) {
+    var newCommand = new this();
+    var red = parseFloat(sample.red/255);
+    var green = parseFloat(sample.green/255);
+    var blue = parseFloat(sample.blue/255);
+
+    var k = Math.min(1 - red, 1 - blue, 1 - green);
+
+    var c = (1 - red - k)/(1-k);
+    var y = (1 - blue - k)/(1-k);
+    var m = (1 - green - k)/(1-k);
+    console.log(c,y,m,k);
+
+    newCommand.x = sample.x;
+    newCommand.y = sample.y;
+    newCommand.cyan = parseInt(dispense === true ? c * 255 : 0);
+    newCommand.yellow = parseInt(dispense === true ? y * 255 : 0);
+    newCommand.magenta = parseInt(dispense === true ? m * 255 : 0);
+    newCommand.white = parseInt(dispense === true ? 255 - (k * 255) : 0);
+    newCommand.black = parseInt(dispense === true ? k * 255 : 0);
+    newCommand.speed = speed;
+    newCommand.dispense = dispense;
+    newCommand.complete = 'N';
+    newCommand.save( function (err, command) {
+      if(err) throw err;
+      mongoose.model('Sample').findById(sample._id).exec( function (err, sample) {
+        if(err) throw err;
+        sample.commands.push(command._id);
+        sample.save();
+      });
+    });
+};
+
+
+commandSchema.statics.next = function (prevCmd, cb) {
+  async.series({
+    complete : function (cb) {
+      mongoose.model('Command').findOneAndUpdate({commandId : prevCmd}, {$set : { complete : 'Y' }}, function (err) {
+        cb(err);
+      });
+    },
+    get : function (cb) {
+      mongoose.model('Job').findOne({ status: 'active'}).sort({ date: -1})
+        .populate({
+          path : 'samples',
+          populate : {path : 'commands'}
+        })
+        .exec(function(err, job) {
+          if (err) throw err;
+          if(job === null) {
+            cb(err,null);
+            return;
+          }
+          var commands = job.samples.map( function(e) {
+              return e.commands;
+          });
+
+          commands = [].concat.apply([],commands);
+
+          commands = commands.filter( function (e) {
+                return e.complete == "N";
+            }).sort( function( p, e) {
+              return p.commandId - e.commandId;
+            });
+
+          cb(err, commands[0]);
+      });
     }
+  }, function (err, result) {
+    if(err) throw err;
+    cb(result.get);
   });
 };
 
-module.exports.Calibration = mongoose.model('Calibration', calibrationSchema);
+module.exports.Command = mongoose.model('Command', commandSchema);
+
 
 var sampleSchema = new Schema({
   sampleId: ObjectId,
@@ -74,13 +209,13 @@ var sampleSchema = new Schema({
     type: Number
   },
   red: {
-    type: String
+    type: Number
   },
   green: {
-    type: String
+    type: Number
   },
   blue: {
-    type: String
+    type: Number
   },
   commands: [{
       type: Schema.Types.ObjectId,
@@ -88,22 +223,24 @@ var sampleSchema = new Schema({
     }]
 });
 
-sampleSchema.statics.create = function(sample, cb) {
+
+
+sampleSchema.statics.createRandom = function(job, sample, cb) {
   var newSample = new this();
+
   console.log("adding to samples", sample);
   newSample.red = sample.red;
   newSample.blue = sample.blue;
   newSample.green = sample.green;
-  newSample.x = sample.x;
-  newSample.y = sample.y;
+  newSample.x = 0.5 + (Math.random() * (job.width - 1));
+  newSample.y = 0.5 + (Math.random() * (job.height - 1));
   newSample.save(function(err, sample) {
-    if (err) throw err;
-
-    //just going to create dots for now . . . should create other strokes
-
-
-
-    cb(sample);
+      if (err) throw err;
+      //just going to create dots for now . . . should create other strokes
+      console.log(sample);
+      mongoose.model('Job').addSample(job, sample);
+      mongoose.model('Command').commandFlow(job, sample);
+      cb(sample);
   });
 };
 
@@ -127,8 +264,14 @@ var jobSchema = new Schema({
   height: {
     type: Number
   },
+  speed: {
+    type: Number
+  },
   format: {
     type: String
+  },
+  paintMultiplier: {
+    type: Number
   },
   xrand: {
     type: String
@@ -162,10 +305,14 @@ jobSchema.statics.userUpdate = function(data, cb) {
   this.model('Job').findById(data.id).exec(function(err, job) {
     if (err) throw err;
     job.title = data.title || job.title;
-    job.mode = data.mode || job.mode;
-    job.width = data.width || job.width;
-    job.height = data.height || job.height;
+    if(job.sampleCount == 0) {
+      job.width = data.width || job.width;
+      job.height = data.height || job.height;
+      job.mode = data.mode || job.mode;
+    }
+    job.speed = data.speed || job.speed;
     job.format = data.format || job.format;
+    job.paintMultiplier = data.paintMultiplier || job.paintMultiplier;
     job.save();
     cb(job);
   });
@@ -185,6 +332,7 @@ jobSchema.statics.get = function(limit, page, cb) {
       cb(err, jobs);
     });
 };
+
 
 jobSchema.statics.addSample = function(job, sample) {
   this.model('Job').findById(job._id).exec(function(err, job) {
@@ -396,7 +544,11 @@ var statusSchema = new Schema ({
   yPosNext : { type : Number },
   xLim : {type : Number },
   yLim : {type : Number },
+  xLimIn : {type : Number },
+  yLimIn : {type : Number },
   speed : { type : Number },
+  xFact : {type : Number },
+  yFact : { type : Number },
   signal : { type : Number },
   symbol : {type : Number },
   code : {type : Number },
@@ -408,89 +560,125 @@ var statusSchema = new Schema ({
   w : {type : Number }
 });
 
+//Serverside status updateOrCreate
+statusSchema.statics.ssUpdate = function (commandId) {
+  console.log('updating status');
+  mongoose.model('Command').findOne({commandId : commandId}).exec( function (err, cmd) {
+    if(err) throw err;
+    console.log('got command');
+    console.log(cmd);
+    mongoose.model('Status').findOneAndUpdate({}, {
+      $set : {
+        xPosNext : cmd.x,
+        yPosNext : cmd.y,
+        c : cmd.cyan,
+        y : cmd.yellow,
+        m : cmd.magenta,
+        k : cmd.black,
+        w : cmd.white
+      }
+    },{new : true},  function (err, sta) {
+      if(err) throw err;
+      console.log(sta);
+    });
+  });
+};
 
 //Read status codes and switch statuses
 statusSchema.statics.updateStatus = function( data, callback ) {
   var newStatus = new this();
   this.model('Status').remove({}, function (err) {
-    if(err) console.log(err);
-    newStatus.xPos = data.xPos;
-    newStatus.yPos = data.yPos;
-    newStatus.xPosNext = 0;
-    newStatus.yPosNext = 0;
-    newStatus.xLim = data.xLimMax;
-    newStatus.yLim = data.yLimMax;
-    newStatus.speed = 0;
-    newStatus.signal = data.signal;
-    newStatus.code = data.status;
-    newStatus.c = 255;
-    newStatus.y = 123;
-    newStatus.m = 123;
-    newStatus.k = 123;
-    newStatus.w = 123;
-    switch (parseInt(data.status)) {
-      case 1:
-        newStatus.message = "Waiting for command.";
-        break;
-      case 2:
-        newStatus.message = "Executing command.";
-        break;
-      case 3:
-        newStatus.message = "Machine paused. Press pause to continue.";
-        break;
-      case 4:
-        newStatus.message = "Emergency stop engaged. Unlock e-stop to continue.";
-        break;
-      case 5:
-        newStatus.message = "Press soft button to find X minimum.";
-        break;
-      case 6:
-        newStatus.message = "Press soft button to find X maximum.";
-        break;
-      case 7:
-        newStatus.message = "Press soft button to find Y minimum.";
-        break;
-      case 8:
-        newStatus.message = "Press soft button to find Y maximum.";
-        break;
-      case 9:
-        newStatus.message = "Finding X minimum ...";
-        break;
-      case 10:
-        newStatus.message = "Finding X maximum ...";
-        break;
-      case 11:
-        newStatus.message = "Finding Y minimum ...";
-        break;
-      case 12:
-        newStatus.message = "Finding Y maximum ...";
-        break;
-      case 13:
-        newStatus.message = "X minimum hit. Machine stopped!";
-        break;
-      case 14:
-        newStatus.message = "X maximum hit. Machine stopped!";
-        break;
-      case 15:
-        newStatus.message = "Y minimum hit. Machine stopped!";
-        break;
-      case 16:
-        newStatus.message = "Y maximum hit. Machine stopped!";
-        break;
-      case 17:
-        newStatus.message = "Requested command from server.";
-        break;
-      case 18:
-        newStatus.message = "Completed command.";
-        break;
-      default:
-        newStatus.message = "derp";
+    if(err) throw err;
+    mongoose.model('Job').getCurrent( function(job) {
+      if(job === null) {
+        newStatus.xLimIn = 0;
+        newStatus.yLimIn = 0;
+        newStatus.speed = 0;
+      } else {
+        newStatus.xLimIn = job.width;
+        newStatus.yLimIn = job.height;
+        newStatus.speed = job.speed;
       }
-    newStatus.save(function(err,status) {
-      if(err) console.log(err);
-      callback(err, status);
+      newStatus.xPos = data.xPos;
+      newStatus.yPos = data.yPos;
+      newStatus.xPosNext = 0;
+      newStatus.yPosNext = 0;
+      newStatus.xLim = data.xLimMax;
+      newStatus.yLim = data.yLimMax;
+      newStatus.signal = data.signal;
+      newStatus.code = data.status;
+      newStatus.c = 0;
+      newStatus.y = 0;
+      newStatus.m = 0;
+      newStatus.k = 0;
+      newStatus.w = 0;
+      switch (parseInt(data.status)) {
+        case 1:
+          newStatus.message = "Waiting for command.";
+          break;
+        case 2:
+          newStatus.message = "Executing command.";
+          break;
+        case 3:
+          newStatus.message = "Machine paused. Press pause to continue.";
+          break;
+        case 4:
+          newStatus.message = "Emergency stop engaged. Unlock e-stop to continue.";
+          break;
+        case 5:
+          newStatus.message = "Press soft button to find X minimum.";
+          break;
+        case 6:
+          newStatus.message = "Press soft button to find X maximum.";
+          break;
+        case 7:
+          newStatus.message = "Press soft button to find Y minimum.";
+          break;
+        case 8:
+          newStatus.message = "Press soft button to find Y maximum.";
+          break;
+        case 9:
+          newStatus.message = "Finding X minimum ...";
+          break;
+        case 10:
+          newStatus.message = "Finding X maximum ...";
+          break;
+        case 11:
+          newStatus.message = "Finding Y minimum ...";
+          break;
+        case 12:
+          newStatus.message = "Finding Y maximum ...";
+          break;
+        case 13:
+          newStatus.message = "X minimum hit. Machine stopped!";
+          break;
+        case 14:
+          newStatus.message = "X maximum hit. Machine stopped!";
+          break;
+        case 15:
+          newStatus.message = "Y minimum hit. Machine stopped!";
+          break;
+        case 16:
+          newStatus.message = "Y maximum hit. Machine stopped!";
+          break;
+        case 17:
+          newStatus.message = "Requested command from server.";
+          break;
+        case 18:
+          newStatus.message = "Completed command.";
+          break;
+        default:
+          newStatus.message = "derp";
+        }
+      newStatus.save(function(err,status) {
+        if(err) throw(err);
+        callback(err, status);
+      });
+      return;
+
+
     });
-    return;
+
 
   });
 
@@ -498,3 +686,16 @@ statusSchema.statics.updateStatus = function( data, callback ) {
 
 
 module.exports.Status = mongoose.model('Status', statusSchema);
+
+module.exports.cleanSlate = function (cb) {
+  console.log("nuking everything!");
+   mongoose.model('Command').remove({}, function () {
+      mongoose.model('Job').remove({}, function () {
+        mongoose.model('Sample').remove({}, function () {
+          counter.remove({}, function () {
+              cb();
+          });
+        });
+      });
+   });
+};

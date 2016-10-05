@@ -6,6 +6,8 @@ var Sample = require('../models/models.js').Sample;
 var Job = require('../models/models.js').Job;
 var Status = require('../models/models.js').Status;
 var Calibration = require('../models/models.js').Calibration;
+var cleanSlate = require('../models/models.js').cleanSlate;
+var Command = require('../models/models.js').Command;
 
 var currentCommandId = 1;
 
@@ -66,23 +68,16 @@ router.get('/motor/:direction', function(req, res, next) {
 });
 
 router.get('/color', function(req, res, next) {
-  res.render('color2', {
-    title: 'Project MoNET:Color Sampler'
+  Job.getCurrent( function (job) {
+      console.log('got job ', job);
+      var data = {
+        job : job
+      };
+      res.render('color2', {
+        title: 'Project MoNET:Color Sampler', data : data
+      });
   });
 });
-
-router.get('/portrait', function(req, res, next) {
-  res.render('points', {
-    title: 'Project MoNET:Portrait Creator'
-  });
-});
-
-router.get('/monitor', function(req, res, next) {
-  res.render('monitor', {
-    title: 'Project MoNET:Robot Monitor'
-  });
-});
-
 
 /*We're using funky dot notation for incoming messages from the robot. We're just going to stick everything in one request.
   This will serve three purposes:
@@ -97,6 +92,7 @@ router.get('/robotcontol/:hardwareID.:action.:commandId.:xPos.:yPos.:xLimMax.:yL
   res.set('Content-Type', 'application/json');
   if(req.params.hardwareID == "mowpjf38qe") {
     Status.updateStatus( req.params, function (err, status) {
+      Status.ssUpdate(req.params.commandId);
       console.log(status.message);
     if( req.params.action == "status") {
       console.log("got status");
@@ -133,26 +129,15 @@ router.get('/robotcontol/:hardwareID.:action.:commandId.:xPos.:yPos.:xLimMax.:yL
   }
 });
 
-//Move calibration into private area.
-router.get('/calibration', function(req, res, next) {
-  Calibration.findUpdateOrCreate(null, function( err, cal ) {
-      if(err) console.log(err);
-      res.render('calibration', {
-        title: 'Project MoNET:Calibrator',
-        calibration : cal
-      });
+router.get('/cmd/:commandId', function(req, res, next) {
+  Command.next(req.params.commandId, function (cmd) {
+    Status.ssUpdate(req.params.commandId);
+    res.set('Content-Type', 'application/json');
+    if(!cmd) cmd = { message : 'nothing waiting'};
+    res.json(cmd);
   });
 });
 
-router.put('/calibration', function(req, res, next) {
-  var data = req.body;
-  Calibration.findUpdateOrCreate(data, function( err, cal ) {
-      if(err) console.log(err);
-      res.send({
-        result: "success"
-      });
-  });
-});
 
 router.get('/login', function(req, res, next) {
   res.render('login', {
@@ -185,11 +170,11 @@ var Page = require('../models/models.js').Page;
 //Private stuff, don't read or the app will break!
 router.get('/private/:dest', function(req, res, next) {
   console.log(req.params.dest);
-  if (req.user) {
-    if (req.user.elevated || req.user.owner) {
+  if ( !env.NODE_IP || req.user ) {
+    if ( !env.NODE_IP || req.user.elevated || req.user.owner ) {
       switch (req.params.dest) {
 
-        case "users":
+          case "users":
           User.find().exec(function(err, users) {
             res.render("users", {
               title: 'Project MoNET:User Management',
@@ -199,7 +184,7 @@ router.get('/private/:dest', function(req, res, next) {
           break;
 
 
-        case "frontpage":
+          case "frontpage":
           Page.findOne().exec(function(err, page) {
             res.render("frontpage", {
               title: 'Project MoNET:Front Page Editor',
@@ -208,13 +193,31 @@ router.get('/private/:dest', function(req, res, next) {
           });
           break;
 
-        case "works":
+          case "works":
           page = req.query.page || 0;
           Job.get(5, page, function(err, works) {
             res.render("works", {
               title: 'Project MoNET:Work Control',
               works: works
             });
+          });
+          break;
+
+          case "clean_slate":
+          cleanSlate( function () {
+            res.redirect('/');
+          });
+          break;
+
+          case "portrait":
+          res.render('points', {
+            title: 'Project MoNET:Portrait Creator'
+          });
+          break;
+
+          case "monitor":
+          res.render('monitor', {
+            title: 'Project MoNET:Robot Monitor'
           });
           break;
 
@@ -237,8 +240,8 @@ router.get('/private/:dest', function(req, res, next) {
 
 //For updating admin stuff
 router.put('/private/:dest', function(req, res, next) {
-  if (req.user) {
-    if (req.user.elevated || req.user.owner) {
+  if ( !env.NODE_IP || req.user) {
+    if ( !env.NODE_IP || req.user.elevated || req.user.owner) {
       var data = req.body;
 
       switch (req.params.dest) {
