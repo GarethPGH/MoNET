@@ -170,8 +170,8 @@ var Page = require('../models/models.js').Page;
 //Private stuff, don't read or the app will break!
 router.get('/private/:dest', function(req, res, next) {
   console.log(req.params.dest);
-  if ( !env.NODE_IP || req.user ) {
-    if ( !env.NODE_IP || req.user.elevated || req.user.owner ) {
+  if ( !process.env.NODE_IP || req.user ) {
+    if ( !process.env.NODE_IP || req.user.elevated || req.user.owner ) {
       switch (req.params.dest) {
 
           case "users":
@@ -240,8 +240,8 @@ router.get('/private/:dest', function(req, res, next) {
 
 //For updating admin stuff
 router.put('/private/:dest', function(req, res, next) {
-  if ( !env.NODE_IP || req.user) {
-    if ( !env.NODE_IP || req.user.elevated || req.user.owner) {
+  if ( !process.env.NODE_IP || req.user) {
+    if ( !process.env.NODE_IP || req.user.elevated || req.user.owner) {
       var data = req.body;
 
       switch (req.params.dest) {
