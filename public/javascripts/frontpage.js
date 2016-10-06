@@ -25,6 +25,11 @@ $(document).ready(function() {
     inline: true,
     plugins: "link",
   });
+  tinymce.init({
+    selector: '#contactus',
+    inline: true,
+    plugins: "link",
+  });
 
   $('#save').click(function(e) {
     e.preventDefault;

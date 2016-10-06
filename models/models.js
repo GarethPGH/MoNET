@@ -508,6 +508,9 @@ var pageSchema = new Schema({
   },
   social: {
     type: String
+  },
+  contactus: {
+    type: String
   }
 });
 
@@ -522,6 +525,7 @@ pageSchema.statics.updateOrCreate = function(data, cb) {
         newPage.works = "Works";
         newPage.colorwall = "Colorwall";
         newPage.social = "Social";
+        newPage.contactus = "Contact";
         newPage.save(cb(err, page));
         return;
       }
@@ -534,6 +538,7 @@ pageSchema.statics.updateOrCreate = function(data, cb) {
         page.works = data.works;
         page.colorwall = data.colorwall;
         page.social = data.social;
+        page.contactus = data.contactus;
         page.save(cb(err, page));
         return;
       }

@@ -23,16 +23,13 @@ block content
   .container-fluid
     form#frontpage
       .row#fp-top
-        .col-md-2
-        .col-md-8.content
+        .col-md-8.col-md-offset-2.content
           p.
             You can click on basically any dashed item in the page below to edit the text in it. That will flow over to the front page when you save this page. Be careful with HTML and check your work!
-        .col-md-2
     
     
       #about.row.light-orange
-        .col-md-2
-        .col-md-8.content.hero
+        .col-md-8.col-md-offset-2.content
           .row
             .col-md-5
               img(src="/images/hero_logo_head.png")
@@ -42,35 +39,28 @@ block content
                   img(src="/images/hero_logo_words.png")
               .row
                 #subtitle.col-md-12.fp-edit!= page.subtitle
-        .col-md-2
     
       .row
-        .col-md-2
-        .col-md-8.content
+        .col-md-8.col-md-offset-2.content
           .row
             #monet.col-md-8.fp-edit(style= "margin-top: 60px")!= page.monet
             .col-md-4.text-center
               img.circle-up(src="/images/claude_monet.jpg")
-        .col-md-2
 
       .row.med-orange
         #how-target
-        .col-md-2
-        .col-md-8.content
+        .col-md-8.col-md-offset-2.content
           h1 how it works
           .fp-edit#works!= page.works
-        .col-md-2
       
       
       #color-wall.row
         #color-wall-target
-        .col-md-2
-        .col-md-8.content.colorwall
+        .col-md-8.col-md-offset-2.content.colorwall
           img.header(src="/images/color_sampler.png")
           #colorwall.fp-edit!= page.colorwall
           .text-center
             a.btn.btn-info.btn-lg.text-center(href="color")  Start Sampling!
-        .col-md-2
       //-
         #team.row
           #team-target
@@ -95,34 +85,35 @@ block content
       if latest  
         #blog.row.light-orange
           #blog-target
-          .col-md-2
-          .col-md-8.content
+          .col-md-8.col-md-offset-2.content
             h2 latest blog post
             h1= latest.title
             p.blogcontent #{latest.summary} <a href="#{latest.url}"> ... read more</a>
             p.smaller Posted by #{latest.author} #{latest.time_ago} in the <a href="http://blog.projectmo.net">Project MoNET Blog</a>
-          .col-md-2      
 
       #contact.row.inverse
         #social-target
-        .col-md-2
-        .col-md-8.content
+        .col-md-8.col-md-offset-2.content
           h1 be social
           #social.fp-edit!= page.social
           .row
           .col-md-4.social-links
             a(href="https://www.facebook.com/projectmonet/")
               i.fa.fa-facebook-square 
-              |  Facebook        
+              b  Facebook        
           .col-md-4.social-links
             a(href="https://twitter.com/robomonet")
               i.fa.fa-twitter-square 
-              |  Twitter          
+              b  Twitter          
           .col-md-4.social-links
-              a(href="https://github.com/LikeClockwork/MoNET")
-                i.fa.fa-github-square 
-                |  GitHub
-        .col-md-2     
+            a(href="https://github.com/LikeClockwork/MoNET")
+              i.fa.fa-github-square 
+              b  GitHub
+      #contact-h.row.inverse
+        #contactus-target
+        .col-md-8.col-md-offset-2.content
+          #contactus.fp-edit!= page.contactus || "Contact info"
+
                         
   include js.jade
 
