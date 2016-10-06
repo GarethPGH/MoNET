@@ -93,36 +93,63 @@ router.get('/robotcontol/:hardwareID.:action.:commandId.:xPos.:yPos.:xLimMax.:yL
   if(req.params.hardwareID == "mowpjf38qe") {
     Status.updateStatus( req.params, function (err, status) {
       Status.ssUpdate(req.params.commandId);
-      console.log(status.message);
-    if( req.params.action == "status") {
-      console.log("got status");
-      res.json({message : "OK"});
-    } else {
-      if(req.params.action == "complete") {
-        console.log("Command " + req.params.commandId + " marked as complete");
-      }
-      // this needs to be replaced with logic to get the next incomplete command and send it
-      currentCommandId++;
-      var paintTop = 255;
+      console.log("status.message",status.message);
 
-      var command = {
-            cr: 1,
-            cid : currentCommandId,
-            x : parseInt(Math.random() * req.params.xLimMax), //x destination
-            y : parseInt(Math.random() * req.params.yLimMax), //y destination
-            s : 5000, //speed at which the steppers will move for this command
-            r : 255,//parseInt(Math.random() * paintTop), //paint pump rates
-            g : 255,//parseInt(Math.random() * paintTop),
-            b : 0,//parseInt(Math.random() * paintTop * 0.25),
-            w : 150,
-            k : 0,//parseInt(Math.random() * paintTop) * 0.25,
-            m : 0,
-            d : 255,
-            cl : 255
-        };
-        res.json(command);
+      if( parseInt(req.params.status) >= 5 &&  parseInt(req.params.status) <= 12 ) {
+        Command.purgePending();
       }
-    });
+
+
+      if( req.params.action == "status") {
+        console.log("got status");
+        res.json({message : "OK"});
+      } else {
+        var completeCommandId = 0;
+        if ( req.params.action == "complete") {
+            completeCommandId = req.params.commandId;
+        }
+        Command.next(completeCommandId, function (cmd) {
+          console.log('cmd',JSON.stringify(cmd));
+          Status.ssUpdate(req.params.commandId);
+          res.set('Content-Type', 'application/json');
+          var command = {};
+          if(cmd === null) {
+            console.log("null command");
+            command = { message : 'nothing waiting'};
+            console.log(JSON.stringify(command));
+            res.json(command);
+            return;
+          } else {
+            Job.getCurrent( function (job) {
+              console.log("not null command");
+              command = {
+                    cr: 1,
+                    cid : cmd.commandId,
+                    x : parseInt((cmd.x/job.width) * req.params.xLimMax), //x destination
+                    y : parseInt((cmd.y/job.height) * req.params.yLimMax) , //y destination
+                    s : job.speed, //speed at which the steppers will move for this command
+                    r : cmd.magenta,//parseInt(Math.random() * paintTop), //paint pump rates
+                    g : cmd.yellow,//parseInt(Math.random() * paintTop),
+                    b : cmd.cyan,//parseInt(Math.random() * paintTop * 0.25),
+                    w : cmd.white,
+                    k : cmd.black,
+                    m : 0,
+                    d : cmd.dispense === true ? 255 : 0 ,
+                    cl : 0,
+                    pm : job.paintMultiplier
+                  };
+                  console.log(JSON.stringify(command));
+                  res.json(command);
+                  return;
+                });
+
+              }
+
+
+
+          });
+        }
+      });
 
   } else {
     res.json({ message : "Invalid HardwareID!" });

@@ -153,11 +153,20 @@ commandSchema.statics.generateCommand = function (speed, dispense, sample) {
     });
 };
 
+commandSchema.statics.purgePending = function () {
+  mongoose.model('Command').update( { complete : 'P' }, { $set : { complete : 'N' }}, {multi : true}, function (err) {
+    console.log("purging pending");
+    if (err) throw err;
+    return;
+  });
+};
+
+
 
 commandSchema.statics.next = function (prevCmd, cb) {
   async.series({
     complete : function (cb) {
-      mongoose.model('Command').findOneAndUpdate({commandId : prevCmd}, {$set : { complete : 'Y' }}, function (err) {
+        mongoose.model('Command').findOneAndUpdate({commandId : prevCmd}, {$set : { complete : 'Y' }}, function (err) {
         cb(err);
       });
     },
@@ -165,7 +174,10 @@ commandSchema.statics.next = function (prevCmd, cb) {
       mongoose.model('Job').findOne({ status: 'active'}).sort({ date: -1})
         .populate({
           path : 'samples',
-          populate : {path : 'commands'}
+          populate : {
+            path : 'commands',
+            match : {complete : 'N'}
+          }
         })
         .exec(function(err, job) {
           if (err) throw err;
@@ -179,18 +191,26 @@ commandSchema.statics.next = function (prevCmd, cb) {
 
           commands = [].concat.apply([],commands);
 
-          commands = commands.filter( function (e) {
-                return e.complete == "N";
-            }).sort( function( p, e) {
+          commands = commands.sort( function( p, e) {
               return p.commandId - e.commandId;
             });
 
           var cmd = commands[0];
 
-          cmd['paintMultiplier'] = job.paintMultiplier;
-          cmd.speed = job.speed;
+          if(!cmd) {
+            cb(err,null);
+            return;
+          }
 
-          cb(err, cmd);
+          cmd.paintMultiplier = job.paintMultiplier;
+          cmd.speed = job.speed;
+          console.log(JSON.stringify(cmd));
+          mongoose.model('Command').findOneAndUpdate( {commandId : cmd.commandId}, { $set : { complete : 'P' }}, {new : true }, function (err, derp) {
+            console.log(JSON.stringify(derp));
+            if (err) throw err;
+            cb(err, derp);
+            return;
+          });
       });
     }
   }, function (err, result) {
@@ -574,8 +594,6 @@ statusSchema.statics.ssUpdate = function (commandId) {
   console.log('updating status');
   mongoose.model('Command').findOne({commandId : commandId}).exec( function (err, cmd) {
     if(err) throw err;
-    console.log('got command');
-    console.log(cmd);
     mongoose.model('Status').findOneAndUpdate({}, {
       $set : {
         xPosNext : cmd.x,
@@ -588,7 +606,8 @@ statusSchema.statics.ssUpdate = function (commandId) {
       }
     },{new : true},  function (err, sta) {
       if(err) throw err;
-      console.log(sta);
+      console.log("status",sta);
+      return;
     });
   });
 };
