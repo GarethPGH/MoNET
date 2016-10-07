@@ -1,4 +1,9 @@
-var socket = io();
+
+  if(window.location.href.indexOf("192") > -1) {
+    var socket = io();
+  } else {
+    var socket = io('http://www.projectmo.net:8000');
+  }
 
 
 $(document).ready(function() {
@@ -125,6 +130,7 @@ $(document).ready(function() {
   fileinput.onchange = function() {
     $('#file-holder').removeClass('btn-info').addClass('btn-danger');
     $('#file-holder span').html('Processing ...');
+    $('#add').show();
     if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
       alert('The File APIs are not fully supported in this browser.');
       return false;

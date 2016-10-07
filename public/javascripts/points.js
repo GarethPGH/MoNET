@@ -1,4 +1,8 @@
-var socket = io();
+if(window.location.href.indexOf("192") > -1) {
+  var socket = io();
+} else {
+  var socket = io('http://www.projectmo.net:8000');
+}
 
 
 $(document).ready(function() {
