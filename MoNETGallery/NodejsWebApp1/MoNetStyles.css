@@ -1,0 +1,44 @@
+﻿
+body {
+    /*Nothing fancy here yet*/
+}
+
+#ColorPreview{
+    width:50px;
+    height: 50px;
+    background-color:blue;
+}
+
+#Frame{
+    /*This border is temporary, until we get page set up and camera image centered on it properly*/
+    border:solid;
+    border-color: black;
+    margin-left: 15vw;
+    margin-right: 15vw;
+    margin-bottom: 3vw;
+}
+
+#banner{
+    color:darkblue;
+    text-align: center;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-style:italic;
+   
+}
+
+#intro{
+    text-align: center;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+#colorbox{
+    height: 2vw;
+    width: 2vw;
+    background-color:blue;
+    display: inline-block;
+    margin-left: 45vw;
+}
+
+#colorhexvalue{
+    align-content:center;
+}

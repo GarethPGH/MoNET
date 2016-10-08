@@ -1,0 +1,17 @@
+﻿{
+"type": "object",
+
+  "properties": {
+    "position": {
+      "type": "array",
+      "description": "X and Y grid coordinates and R,G,B values",
+      "minItems": 5,
+      "items": {
+        "type": "number"
+      }
+    }
+  }
+}
+//create a test JSON objects to see if they will show up in the canvas,
+//find a decent res grid for color placement. Have this centered in the canvas.
+

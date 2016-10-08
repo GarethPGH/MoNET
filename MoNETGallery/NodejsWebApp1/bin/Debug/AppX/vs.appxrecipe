@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Machine>OWLLET</Machine>
+    <WindowsUser>Gareth</WindowsUser>
+    <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
+    <TargetOsVersion>10.0</TargetOsVersion>
+    <TargetOsDescription>Windows 10.0</TargetOsDescription>
+    <SolutionConfiguration>Debug|AnyCPU</SolutionConfiguration>
+    <PackageArchitecture>neutral</PackageArchitecture>
+    <PackageIdentityName>b7d5e7de-f5e0-439a-8737-3ec714309e6c</PackageIdentityName>
+    <IntermediateOutputPath>e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\bld\Debug\</IntermediateOutputPath>
+    <RegisteredManifestChecksum>4D1B5841EA6A26468F7E1F92F901B62572F8342584572E580F8BE8E92236BEC6</RegisteredManifestChecksum>
+    <RegisteredPackageMoniker>b7d5e7de-f5e0-439a-8737-3ec714309e6c_1.0.0.0_neutral__kpdk5y0tby8m0</RegisteredPackageMoniker>
+    <RegisteredUserModeAppID>b7d5e7de-f5e0-439a-8737-3ec714309e6c_kpdk5y0tby8m0!App</RegisteredUserModeAppID>
+    <RegisteredPackageID>b7d5e7de-f5e0-439a-8737-3ec714309e6c</RegisteredPackageID>
+    <RegisteredPackagePublisher>CN=Gareth</RegisteredPackagePublisher>
+    <RegisteredVersion>1.0.0.0</RegisteredVersion>
+    <JitOptimizationSuppressed>True</JitOptimizationSuppressed>
+  </PropertyGroup>
+  <ItemGroup>
+    <AppXManifest Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\bin\Debug\AppxManifest.xml">
+      <PackagePath>AppxManifest.xml</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2016-06-12T21:37:17.499</Modified>
+    </AppXManifest>
+  </ItemGroup>
+  <ItemGroup>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\css\MoNetStyles.css">
+      <PackagePath>css\MoNetStyles.css</PackagePath>
+      <Modified>2016-06-12T04:06:15.987</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\css\default.css">
+      <PackagePath>css\default.css</PackagePath>
+      <Modified>2015-10-11T02:09:40.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\MoNetStyles.css">
+      <PackagePath>MoNetStyles.css</PackagePath>
+      <Modified>2016-06-12T04:06:15.987</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\WinJS\css\ui-dark.css">
+      <PackagePath>WinJS\css\ui-dark.css</PackagePath>
+      <Modified>2015-10-11T02:09:40.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\WinJS\css\ui-light.css">
+      <PackagePath>WinJS\css\ui-light.css</PackagePath>
+      <Modified>2015-10-11T02:09:40.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\images\bird.png">
+      <PackagePath>images\bird.png</PackagePath>
+      <Modified>2016-06-12T17:23:00.662</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\images\birdwithhat.png">
+      <PackagePath>images\birdwithhat.png</PackagePath>
+      <Modified>2016-06-12T17:24:21.414</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\images\birdwithmonocle.png">
+      <PackagePath>images\birdwithmonocle.png</PackagePath>
+      <Modified>2016-06-12T17:28:46.369</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\images\LockScreenLogo.scale-200.png">
+      <PackagePath>images\LockScreenLogo.scale-200.png</PackagePath>
+      <Modified>2015-10-11T02:09:42.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\images\SplashScreen.scale-200.png">
+      <PackagePath>images\SplashScreen.scale-200.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2015-10-11T02:09:42.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\images\Square150x150Logo.scale-200.png">
+      <PackagePath>images\Square150x150Logo.scale-200.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2015-10-11T02:09:42.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\images\Square44x44Logo.scale-200.png">
+      <PackagePath>images\Square44x44Logo.scale-200.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2015-10-11T02:09:42.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\images\Square44x44Logo.targetsize-24_altform-unplated.png">
+      <PackagePath>images\Square44x44Logo.targetsize-24_altform-unplated.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2015-10-11T02:09:42.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\images\StoreLogo.png">
+      <PackagePath>images\StoreLogo.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2015-10-11T02:09:42.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\images\Wide310x150Logo.scale-200.png">
+      <PackagePath>images\Wide310x150Logo.scale-200.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2015-10-11T02:09:42.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\json-schema.json">
+      <PackagePath>json-schema.json</PackagePath>
+      <Modified>2016-06-12T04:06:16.065</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\package.json">
+      <PackagePath>package.json</PackagePath>
+      <Modified>2016-06-12T04:06:16.066</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\js\default.js">
+      <PackagePath>js\default.js</PackagePath>
+      <Modified>2015-09-20T21:22:50.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\js\gallerypreview.js">
+      <PackagePath>js\gallerypreview.js</PackagePath>
+      <Modified>2016-06-12T18:42:30.067</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\js\jquery-2.2.3.intellisense.js">
+      <PackagePath>js\jquery-2.2.3.intellisense.js</PackagePath>
+      <Modified>2016-06-12T04:06:15.990</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\js\jquery-2.2.3.js">
+      <PackagePath>js\jquery-2.2.3.js</PackagePath>
+      <Modified>2016-06-12T04:06:16.038</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\js\jquery-2.2.3.min.js">
+      <PackagePath>js\jquery-2.2.3.min.js</PackagePath>
+      <Modified>2016-06-12T04:06:16.043</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\js\TestResponsiveness.js">
+      <PackagePath>js\TestResponsiveness.js</PackagePath>
+      <Modified>2016-06-12T04:06:16.053</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\WinJS\js\en-US\ui.strings.js">
+      <PackagePath>WinJS\js\en-US\ui.strings.js</PackagePath>
+      <Modified>2015-10-11T02:09:40.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\WinJS\js\base.js">
+      <PackagePath>WinJS\js\base.js</PackagePath>
+      <Modified>2015-10-11T02:09:40.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\WinJS\js\ui.js">
+      <PackagePath>WinJS\js\ui.js</PackagePath>
+      <Modified>2015-10-11T02:09:40.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\js\jquery-2.2.3.min.map">
+      <PackagePath>js\jquery-2.2.3.min.map</PackagePath>
+      <Modified>2016-06-12T04:06:16.053</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\MoNetCanvas.html">
+      <PackagePath>MoNetCanvas.html</PackagePath>
+      <Modified>2016-06-12T21:36:08.517</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\packages.config">
+      <PackagePath>packages.config</PackagePath>
+      <Modified>2016-06-12T04:06:16.067</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\Web.config">
+      <PackagePath>Web.config</PackagePath>
+      <Modified>2016-06-12T04:06:16.064</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\Web.Debug.config">
+      <PackagePath>Web.Debug.config</PackagePath>
+      <Modified>2016-06-12T04:06:16.063</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\vwd.webinfo">
+      <PackagePath>vwd.webinfo</PackagePath>
+      <Modified>2016-06-12T04:06:16.068</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\WinJS\fonts\Symbols.ttf">
+      <PackagePath>WinJS\fonts\Symbols.ttf</PackagePath>
+      <Modified>2015-10-11T02:09:40.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="e:\my documents\visual studio 2015\Projects\MoNETgallery\MoNETgallery\bin\Debug\ReverseMap\resources.pri">
+      <PackagePath>resources.pri</PackagePath>
+      <Modified>2016-06-12T21:37:17.439</Modified>
+    </AppxPackagedFile>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+</Project>

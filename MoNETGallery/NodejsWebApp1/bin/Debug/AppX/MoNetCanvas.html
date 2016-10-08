@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MoNET Canvas</title>
+   <!--<script src="ReadCamera.js"></script>-->
+    <!--<script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>-->
+
+    <script src="Scripts/jquery-2.2.3.min.js"></script>
+    <script type="text/javascript" src="TestResponsiveness.js"></script>
+    <script type="text/javascript" src="gallerypreview.js"></script>
+
+
+    <link rel="stylesheet" type="text/css" href="MoNetStyles.css" />.
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+</head>
+<body>
+        <div class="container-fluid">
+            <div>
+                <h1 id="banner">Gallery</h1>
+            </div>
+        </div>
+<div id="PreviewIcons" class="container-fluid">
+   <div id="image1"></div>
+    <div id="image2"></div>
+    <div id="image3"></div>
+</div>
+<div id="Display">
+    <div class="container-fluid">
+    <!--This will hold a textbox that displays a hexcode and a preview of the rgb value the camera is using at this momment-->
+        <div id="colorbox"></div> <span id="colorhexvalue">colorhexvalue</span>
+    </div>
+
+    <div class="container-fluid" id="Frame">
+        <div class="row">
+            <div>
+                there should be some words displayed here
+                <!--This will hold a canvas of real time what the robot is painting-->
+                <canvas id="Painting">
+                    <!--There will be a JS implementaion that will scale canvas to size of screen-->
+                    <!--JS will link positions and color values to the browser-->
+                </canvas>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
