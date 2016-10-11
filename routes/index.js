@@ -87,7 +87,7 @@ router.get('/color', function(req, res, next) {
 */
 
             //robotcontol/mowpjf38qe.fetch  .0         .0    .0    .0    .0    .0    .0    .429495  .4294995 .0     .0     .-60    .1
-router.get('/robotcontol/:hardwareID.:action.:commandId.:xPos.:yPos.:xLimMax.:yLimMax.:signal.:status', function(req ,res, next) {
+router.get('/robotcontol/:hardwareID.:action.:commandId.:xPos.:yPos.:xLimMax.:yLimMax.:signal.:status.:reqCount', function(req ,res, next) {
   console.log(req.params);
   res.set('Content-Type', 'application/json');
   if(req.params.hardwareID == "mowpjf38qe") {
@@ -108,7 +108,7 @@ router.get('/robotcontol/:hardwareID.:action.:commandId.:xPos.:yPos.:xLimMax.:yL
         if ( req.params.action == "complete") {
             completeCommandId = req.params.commandId;
         }
-        Command.next(completeCommandId, function (cmd) {
+        Command.nextCmds(completeCommandId, req.params.xLimMax, req.params.yLimMax, parseInt(req.params.reqCount), function (cmd) {
           console.log('cmd',JSON.stringify(cmd));
           Status.ssUpdate(req.params.commandId);
           res.set('Content-Type', 'application/json');
@@ -116,40 +116,15 @@ router.get('/robotcontol/:hardwareID.:action.:commandId.:xPos.:yPos.:xLimMax.:yL
           if(cmd === null) {
             console.log("null command");
             command = { message : 'nothing waiting'};
-            console.log(JSON.stringify(command));
-            res.json(command);
-            return;
           } else {
-            Job.getCurrent( function (job) {
-              console.log("not null command");
-              command = {
-                    cr: 1,
-                    cid : cmd.commandId,
-                    x : parseInt((cmd.x/job.width) * req.params.xLimMax), //x destination
-                    y : parseInt((cmd.y/job.height) * req.params.yLimMax) , //y destination
-                    s : job.speed, //speed at which the steppers will move for this command
-                    r : cmd.magenta,//parseInt(Math.random() * paintTop), //paint pump rates
-                    g : cmd.yellow,//parseInt(Math.random() * paintTop),
-                    b : cmd.cyan,//parseInt(Math.random() * paintTop * 0.25),
-                    w : cmd.white,
-                    k : cmd.black,
-                    m : 0,
-                    d : cmd.dispense === true ? 255 : 0 ,
-                    cl : 0,
-                    pm : job.paintMultiplier
-                  };
-                  console.log(JSON.stringify(command));
-                  res.json(command);
-                  return;
-                });
+            command = cmd;
+          }
+          console.log(JSON.stringify(command));
+          res.json(command);
 
-              }
-
-
-
-          });
-        }
-      });
+        });
+      }
+    });
 
   } else {
     res.json({ message : "Invalid HardwareID!" });

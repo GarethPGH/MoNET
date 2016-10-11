@@ -41,8 +41,14 @@ $(document).ready(function() {
           width : formData.width,
           height : formData.height,
           speed : formData.speed,
+          speedDispense : formData.speedDispense,
           mode : formData.mode,
-          paintMultiplier : formData.paintMultiplier
+          paintMultiplier : formData.paintMultiplier,
+          redBoost : formData.redBoost,
+          greenBoost : formData.greenBoost,
+          blueBoost : formData.blueBoost,
+          whiteBoost : formData.whiteBoost,
+          blackBoost : formData.blackBoost
         };
 
         var errors = 0;
@@ -70,6 +76,8 @@ $(document).ready(function() {
         var target = $(this).attr('config-for');
 
         var data = validateForm( target);
+
+        console.log(data);
 
         if(data) {
           var button = $(this);
@@ -126,15 +134,30 @@ $(document).ready(function() {
         if(check) {
           $.ajax({
             contentType: "application/json",
-            url: '/private/works/',
+            url: '/private/works',
             type: 'PUT',
             processData: false,
-            data: JSON.stringify(data),
-            success: function(data) {
-              console.log("play",data);
-              location.reload();
+            data: JSON.stringify(check),
+            success: function(check) {
+              console.log(check);
+              $.ajax({
+                contentType: "application/json",
+                url: '/private/works/',
+                type: 'PUT',
+                processData: false,
+                data: JSON.stringify(data),
+                success: function(data) {
+                  console.log("play",data);
+                  location.reload();
+                }
+              });
+
+
             }
           });
+
+
+
         }
         return false;
 

@@ -37,7 +37,7 @@ var commandSchema = new Schema({
   white: { type: Number },
   x: { type: Number },
   y: { type: Number },
-  dispense : {type : Boolean},
+  dispense : {type : Number},
   speed: { type: Number },
   complete: { type: String },
   paintMultiplier : { type: Number, default : 10 }
@@ -45,21 +45,10 @@ var commandSchema = new Schema({
 
 commandSchema.pre('save', function(next) {
     var doc = this;
-    counter.findOneAndUpdate({counterFor: "command"}, {$inc: { seq: 1} }, {new : true} , function(err, thisCounter)   {
-      console.log(thisCounter);
+    counter.findOneAndUpdate({counterFor: "command"}, {$inc: { seq: 1} }, {new : true, upsert : true} , function(err, thisCounter)   {
       if(err) return next(err);
-      if( thisCounter === null) {
-        console.log('creating new counter');
-        counter.createNewCounter("command", function( err, newCounter) {
-          if(err) return next(err);
-          console.log(newCounter);
-          doc.commandId = newCounter.seq;
-          next();
-        });
-      } else {
         doc.commandId = thisCounter.seq;
         next();
-      }
     });
 });
 
@@ -67,48 +56,57 @@ function passCommand (speed, dispense, sample) {
   mongoose.model('Command').generateCommand (speed, dispense, sample);
 }
 
-function emptyMove(speed, x, y) {
+function emptyMove(speed, x, y, sampleId, dispense) {
   var sample = {
+    _id : sampleId,
     red : 0,
     blue : 0,
     green : 0,
     x : x,
     y: y
   };
-  passCommand (speed, false, sample);
+  generateCommand (speed, dispense, sample);
 }
 
 commandSchema.statics.commandFlow = function (job, sample) {
   if(typeof job.mode == "undefined" || job.mode == "Random continuous") {
-    passCommand(job.speed, true, sample);
+    passCommand(job.speed, 'color', sample);
 
   } else if ( job.mode == "Random lines" ) {
-    async.series([
+    async.waterfall([
       //move some place random first
       function(callback) {
         var x = 0.5 + (Math.random() * (job.width - 1));
         var y = 0.5 + (Math.random() * (job.height - 1));
-        emptyMove(job.speed,x,y);
+        emptyMove(job.speed, x, y, sample._id, 'no');
         callback(null);
       },
       //then draw the sample
       function(callback) {
-        passCommand(job.speed, true, sample);
+        passCommand(job.speed, 'color', sample);
         callback(null);
       }
     ]);
 
   } else if ( job.mode == "Random spots" ) {
-    async.series([
+    async.waterfall([
       //move some place random first
       function(callback) {
-        emptyMove(job.speed, sample.x - 0.25, sample.y);
+        emptyMove(job.speed, sample.x - 0.5, sample.y, sample._id, 'no');
         callback(null);
       },
       //then draw the sample
       function(callback) {
-        sample.x += 0.5;
-        passCommand(job.speed * 4, true, sample);
+        sample.x += 1;
+        passCommand(job.speed * 10, 'color', sample);
+        callback(null);
+      },
+      function(callback) {
+        emptyMove(job.speed * 10, sample.x - 1, sample.y, sample._id, 'yes');
+        callback(null);
+      },
+      function(callback) {
+        emptyMove(job.speed * 10, sample.x, sample.y, sample._id, 'yes');
         callback(null);
       }
     ]);
@@ -122,26 +120,42 @@ commandSchema.statics.commandFlow = function (job, sample) {
 
 commandSchema.statics.generateCommand = function (speed, dispense, sample) {
     var newCommand = new this();
-    var red = parseFloat(sample.red/255);
-    var green = parseFloat(sample.green/255);
-    var blue = parseFloat(sample.blue/255);
+    if(dispense === 'color') {
+      var red = parseFloat(sample.red/255);
+      var green = parseFloat(sample.green/255);
+      var blue = parseFloat(sample.blue/255);
 
-    var k = Math.min(1 - red, 1 - blue, 1 - green);
+      var k = Math.min(1 - red, 1 - blue, 1 - green);
 
-    var c = (1 - red - k)/(1-k);
-    var y = (1 - blue - k)/(1-k);
-    var m = (1 - green - k)/(1-k);
-    console.log(c,y,m,k);
+      var c = (1 - red - k)/(1-k);
+      var y = (1 - blue - k)/(1-k);
+      var m = (1 - green - k)/(1-k);
+      console.log(c,y,m,k);
+      newCommand.cyan = parseInt(!isNaN(c) ? c * 255 : 0) ;
+      newCommand.yellow = parseInt(!isNaN(y) ? y * 255 : 0);
+      newCommand.magenta = parseInt(!isNaN(m) ? m * 255 : 0);
+      newCommand.white = parseInt(!isNaN(k) ? 255 - (k * 255) : 0);
+      newCommand.black = parseInt(!isNaN(k) ? k * 255 : 0);
+    } else {
+      newCommand.cyan = 0;
+      newCommand.yellow = 0;
+      newCommand.magenta = 0;
+      newCommand.white = 0;
+      newCommand.black = 0;
+
+    }
+
+    if(dispense == "color" || dispense == 'yes') {
+      newCommand.dispense = 255;
+    } else {
+      newCommand.dispense = 0;
+    }
+
 
     newCommand.x = sample.x;
     newCommand.y = sample.y;
-    newCommand.cyan = parseInt(dispense === true ? c * 255 : 0);
-    newCommand.yellow = parseInt(dispense === true ? y * 255 : 0);
-    newCommand.magenta = parseInt(dispense === true ? m * 255 : 0);
-    newCommand.white = parseInt(dispense === true ? 255 - (k * 255) : 0);
-    newCommand.black = parseInt(dispense === true ? k * 255 : 0);
+
     newCommand.speed = speed;
-    newCommand.dispense = dispense;
     newCommand.complete = 'N';
     newCommand.save( function (err, command) {
       if(err) throw err;
@@ -163,10 +177,17 @@ commandSchema.statics.purgePending = function () {
 
 
 
-commandSchema.statics.next = function (prevCmd, cb) {
+commandSchema.statics.nextCmds = function (prevCmd, xLim, yLim, reqCount, cb) {
   async.series({
     complete : function (cb) {
-        mongoose.model('Command').findOneAndUpdate({commandId : prevCmd}, {$set : { complete : 'Y' }}, function (err) {
+        mongoose.model('Command').findOneAndUpdate({commandId : prevCmd, complete : 'P'}, {$set : { complete : 'Y' }}, {new : true}, function (err, oldCommand) {
+          if(err) throw err;
+          if(oldCommand) {
+            console.log('Marking ' + oldCommand.commandId + ' as complete.');
+            console.log('oldCommand', JSON.stringify(oldCommand));
+
+          }
+
         cb(err);
       });
     },
@@ -191,35 +212,73 @@ commandSchema.statics.next = function (prevCmd, cb) {
 
           commands = [].concat.apply([],commands);
 
-          commands = commands.sort( function( p, e) {
-              return p.commandId - e.commandId;
-            });
-
-          var cmd = commands[0];
-
-          if(!cmd) {
+          if(commands.length === 0) {
             cb(err,null);
             return;
           }
 
-          cmd.paintMultiplier = job.paintMultiplier;
-          cmd.speed = job.speed;
-          console.log(JSON.stringify(cmd));
-          mongoose.model('Command').findOneAndUpdate( {commandId : cmd.commandId}, { $set : { complete : 'P' }}, {new : true }, function (err, derp) {
-            console.log(JSON.stringify(derp));
+          var cmdIds = [];
+
+          for (var j = 0; j < commands.length; j++) {
+
+            cmdIds.push(commands[j].commandId);
+          }
+
+          //cmd.paintMultiplier = job.paintMultiplier;
+          //cmd.speed = job.speed;
+          console.log(JSON.stringify(cmdIds));
+          console.log(reqCount);
+          mongoose.model('Command').find( {commandId : { $in: cmdIds}, complete : 'N'}).sort({'commandId' : 1}).limit(reqCount).exec( function (err, newCmds) {
             if (err) throw err;
-            cb(err, derp);
-            return;
+            console.log("new commands" , JSON.stringify(newCmds));
+
+            var newCmdIds = [];
+
+            for( var k = 0; k < newCmds.length; k++) {
+
+            var newCmd = newCmds[k];
+
+            newCmdIds.push(newCmd.commandId);
+
+
+            newCmds[k] = {
+                  cr: 1,
+                  cid : newCmd.commandId,
+                  x : parseInt((newCmd.x/job.width) * xLim), //x destination
+                  y : parseInt((newCmd.y/job.height) * yLim) , //y destination
+                  s : parseInt(newCmd.dispense) == 0  ? job.speed : job.speedDispense, //speed at which the steppers will move for this command
+                  r : newCmd.magenta * job.redBoost,//parseInt(Math.random() * paintTop), //paint pump rates
+                  g : newCmd.yellow * job.greenBoost,//parseInt(Math.random() * paintTop),
+                  b : newCmd.cyan * job.blueBoost,//parseInt(Math.random() * paintTop * 0.25),
+                  w : newCmd.white * job.whiteBoost,
+                  k : newCmd.black * job.blackBoost,
+                  m : 0,
+                  d : newCmd.dispense,
+                  cl : 0,
+                  pm : job.paintMultiplier
+                };
+
+              //console.log('commands', JSON.stringify(newCmds[k]));
+            }
+
+            mongoose.model('Command').update( {commandId : {$in : newCmdIds}}, { complete : 'P'},  {multi : true}, function (err) {
+              if (err) throw err;
+              cb(err, newCmds);
+              return;
+
+            });
           });
       });
     }
-  }, function (err, result) {
-    if(err) throw err;
-    var cmd = result.get;
-    //Update this command as being in processData
-    //mongoose.model('Command').findByIdandUpdate(get.commandId)
-    cb(result.get);
-  });
+  },
+  function (err, result) {
+      if(err) throw err;
+      var cmd = result.get;
+      //Update this command as being in processData
+      //mongoose.model('Command').findByIdandUpdate(get.commandId)
+      cb(result.get);
+    }
+  );
 };
 
 module.exports.Command = mongoose.model('Command', commandSchema);
@@ -263,12 +322,12 @@ sampleSchema.statics.createRandom = function(job, sample, cb) {
   newSample.green = sample.green;
   newSample.x = 0.5 + (Math.random() * (job.width - 1));
   newSample.y = 0.5 + (Math.random() * (job.height - 1));
-  newSample.save(function(err, sample) {
+  newSample.save(function(err, mySample) {
       if (err) throw err;
       //just going to create dots for now . . . should create other strokes
-      console.log(sample);
-      mongoose.model('Job').addSample(job, sample);
-      mongoose.model('Command').commandFlow(job, sample);
+      console.log('sample',JSON.stringify(mySample));
+      mongoose.model('Job').addSample(job, mySample);
+      mongoose.model('Command').commandFlow(job, mySample);
       cb(sample);
   });
 };
@@ -296,10 +355,28 @@ var jobSchema = new Schema({
   speed: {
     type: Number
   },
+  speedDispense: {
+    type: Number
+  },
   format: {
     type: String
   },
   paintMultiplier: {
+    type: Number
+  },
+  redBoost: {
+    type: Number
+  },
+  greenBoost: {
+    type: Number
+  },
+  blueBoost: {
+    type: Number
+  },
+  blackBoost: {
+    type: Number
+  },
+  whiteBoost: {
     type: Number
   },
   xrand: {
@@ -334,14 +411,20 @@ jobSchema.statics.userUpdate = function(data, cb) {
   this.model('Job').findById(data.id).exec(function(err, job) {
     if (err) throw err;
     job.title = data.title || job.title;
-    if(job.sampleCount == 0) {
+    if(!job.sampleCount) {
       job.width = data.width || job.width;
       job.height = data.height || job.height;
       job.mode = data.mode || job.mode;
     }
     job.speed = data.speed || job.speed;
+    job.speedDispense = data.speedDispense || job.speedDispense;
     job.format = data.format || job.format;
     job.paintMultiplier = data.paintMultiplier || job.paintMultiplier;
+    job.redBoost = data.redBoost || job.redBoost;
+    job.greenBoost = data.greenBoost || job.greenBoost;
+    job.blueBoost = data.blueBoost || job.blueBoost;
+    job.whiteBoost = data.whiteBoost || job.whiteBoost;
+    job.blackBoost = data.blackBoost || job.blackBoost;
     job.save();
     cb(job);
   });
