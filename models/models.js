@@ -65,7 +65,7 @@ function emptyMove(speed, x, y, sampleId, dispense) {
     x : x,
     y: y
   };
-  generateCommand (speed, dispense, sample);
+  mongoose.model('Command').generateCommand (speed, dispense, sample);
 }
 
 commandSchema.statics.commandFlow = function (job, sample) {
