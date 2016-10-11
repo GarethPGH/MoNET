@@ -320,8 +320,8 @@ sampleSchema.statics.createRandom = function(job, sample, cb) {
   newSample.red = sample.red;
   newSample.blue = sample.blue;
   newSample.green = sample.green;
-  newSample.x = 0.5 + (Math.random() * (job.width - 1));
-  newSample.y = 0.5 + (Math.random() * (job.height - 1));
+  newSample.x = 1 + (Math.random() * (job.width - 2));
+  newSample.y = 1 + (Math.random() * (job.height - 2));
   newSample.save(function(err, mySample) {
       if (err) throw err;
       //just going to create dots for now . . . should create other strokes
