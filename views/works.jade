@@ -92,6 +92,10 @@ block content
                 .col-sm-4
                   input.form-control(type="number" step="0.1" name="blackBoost" value=work.blackBoost||1)
               .form-group
+                label.col-sm-4.control-label(for="spotSize") Spot Size (inches)
+                .col-sm-4
+                  input.form-control(type="number" step="0.1" name="spotSize" value=work.blackBoost||0.5)
+              .form-group
                 .col-sm-4.col-sm-offset-4
                   button.save.btn.btn-success(type="submit" config-for=work._id) Save
             

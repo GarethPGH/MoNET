@@ -48,7 +48,8 @@ $(document).ready(function() {
           greenBoost : formData.greenBoost,
           blueBoost : formData.blueBoost,
           whiteBoost : formData.whiteBoost,
-          blackBoost : formData.blackBoost
+          blackBoost : formData.blackBoost,
+          spotSize : formData.spotSize
         };
 
         var errors = 0;

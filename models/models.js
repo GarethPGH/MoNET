@@ -89,20 +89,21 @@ commandSchema.statics.commandFlow = function (job, sample) {
     ]);
 
   } else if ( job.mode == "Random spots" ) {
+    var spotSize = job.spotSize || 0.25;
     async.waterfall([
       //move some place random first
       function(callback) {
-        emptyMove(job.speed, sample.x - 0.5, sample.y, sample._id, 'no');
+        emptyMove(job.speed, sample.x - spotSize, sample.y, sample._id, 'no');
         callback(null);
       },
       //then draw the sample
       function(callback) {
-        sample.x += 1;
+        sample.x += spotSize * 2;
         passCommand(job.speed * 10, 'color', sample);
         callback(null);
       },
       function(callback) {
-        emptyMove(job.speed * 10, sample.x - 1, sample.y, sample._id, 'yes');
+        emptyMove(job.speed * 10, sample.x - (spotSize * 2), sample.y, sample._id, 'yes');
         callback(null);
       },
       function(callback) {
@@ -320,8 +321,8 @@ sampleSchema.statics.createRandom = function(job, sample, cb) {
   newSample.red = sample.red;
   newSample.blue = sample.blue;
   newSample.green = sample.green;
-  newSample.x = 1 + (Math.random() * (job.width - 2));
-  newSample.y = 1 + (Math.random() * (job.height - 2));
+  newSample.x = 0.5 + (Math.random() * (job.width - 1));
+  newSample.y = 0.5 + (Math.random() * (job.height - 1));
   newSample.save(function(err, mySample) {
       if (err) throw err;
       //just going to create dots for now . . . should create other strokes
@@ -379,6 +380,9 @@ var jobSchema = new Schema({
   whiteBoost: {
     type: Number
   },
+  spotSize: {
+    type: Number
+  },
   xrand: {
     type: String
   },
@@ -425,6 +429,7 @@ jobSchema.statics.userUpdate = function(data, cb) {
     job.blueBoost = data.blueBoost || job.blueBoost;
     job.whiteBoost = data.whiteBoost || job.whiteBoost;
     job.blackBoost = data.blackBoost || job.blackBoost;
+    job.spotSize = data.spotSize || job.spotSize;
     job.save();
     cb(job);
   });
