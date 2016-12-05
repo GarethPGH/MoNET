@@ -5,8 +5,8 @@ block content
   .container
     h1 Works Management
     p Use this page to set up paintings and select which paintings is currently active. 
-    p Only one painting may be active at a time. The active painting determines where color samples will land.
-    p Only one active painting may be "live" at a time. Once a painting is closed cool stuff will happen.
+    p Only one painting may be active at a time. The active painting determines where color samples will land. Additionally, a painting may not be activated until the configuration is set.
+    p The size of the painting will lock once it has accepted samples.
     p.text-center
       button#addJob.btn-success.btn.btn-lg Add New Painting
     
@@ -24,13 +24,11 @@ block content
             button.btn.btn-success.wc-play(style= "#{ work.status === 'active' ? 'display: none' : ''}" data-id= "#{work._id}" )
               i.fa.fa-play
             button.btn.btn-warning.wc-pause(style= "#{ work.status === 'paused' ? 'display: none' : ''}" data-id= "#{work._id}")
-              i.fa.fa-pause  
-            button.btn.btn-default.wc-config
-              i.fa.fa-cogs
-              |  Configure Painting    
-            button.wc-close-pop.btn.btn-danger(data-toggle="modal" data-target='[modal-id="#{work._id}"]')
-              i.fa.fa-stop 
-              |  Close Painting
+              i.fa.fa-pause
+            //-    
+              button.wc-close-pop.btn.btn-danger(data-toggle="modal" data-target='[modal-id="#{work._id}"]')
+                i.fa.fa-stop 
+                |  Close Painting
         
         .row
           .col-md-12
@@ -40,61 +38,66 @@ block content
           .row
             .col-md-12
               .alert.alert-danger This painting already has samples, so its configuration is locked down.
-
-
-
-        
-        .row.config-drawer.text-center
-
-          .col-md-1
-            p 
-              strong.small <br>Width
-            input.form-control.in-small.text-center.small.in-slider(dataId="#{work._id}" param="width" type="number" inputmode="numeric" value="#{work.width || 960}" disabled="#{work.sampleCount > 0}")
-            p
-              .slider(dataId="#{work._id}" param="width" min='120' max='960' initalValue="#{work.width || 960}" disabled="#{work.sampleCount > 0}")
-          .col-md-1
-            p 
-              strong.small <br>Height
-            input.form-control.in-small.text-center.small.in-slider.input-disabled(dataId="#{work._id}" param="height" type="number" inputmode="numeric" value="#{work.height || 480}" disabled="#{work.sampleCount > 0}")
-            p
-              .slider(dataId="#{work._id}" param="height" min='120' max='480' initalValue="#{work.height || 480}" disabled="#{work.sampleCount > 0}")
-
-
-          .col-md-4
-            p 
-              strong <br>Painting Mode
-            select.form-control(multiple size=12 disabled="#{work.sampleCount > 0}")
-              option Blocks
-              option Points
-              option Vertical Lines
-              option Horizontal Lines
-          
-
-          .col-md-1
-            p 
-              strong.small Stroke<br>Width
-            input.form-control.in-small.text-center.small.in-slider(dataId="#{work._id}" param="swidth" type="number" inputmode="numeric" value="#{work.swidth || 10}" disabled="#{work.sampleCount > 0}")
-            p
-              .slider(dataId="#{work._id}" param="swidth" min='5' max='10' initalValue="#{work.swidth || 10}" disabled="#{work.sampleCount > 0}") 
-          .col-md-1
-            p 
-              strong.small Stroke<br>Length
-            input.form-control.in-small.text-center.small.in-slider(dataId="#{work._id}" param="slength" type="number" inputmode="numeric" value="#{work.slength || 20}" disabled="#{work.sampleCount > 0}")
-            p
-              .slider(dataId="#{work._id}" param="slength" min='10' max='20' initalValue="#{work.slength || 20}" disabled="#{work.sampleCount > 0}")                  
-          .col-md-2
-            p 
-              strong.small <br>Horizontal Randomness
-            input.form-control.in-small.text-center.small.in-slider(dataId="#{work._id}" param="xrand" type="number" inputmode="numeric" value="#{work.slength || 0}" disabled="#{work.sampleCount > 0}")
-            p
-              .slider(dataId="#{work._id}" param="slength" min='0' max='100' initalValue="#{work.slength || 0}" disabled="#{work.sampleCount > 0}")     
-          .col-md-2
-            p 
-              strong.small <br>Vertical Randomness
-            input.form-control.in-small.text-center.small.in-slider(dataId="#{work._id}" param="yrand" type="number" inputmode="numeric" value="#{work.slength || 0}" disabled="#{work.sampleCount > 0}")
-            p
-              .slider(dataId="#{work._id}" param="yrand" min='0' max='100' initalValue="#{work.slength || 0}" disabled="#{work.sampleCount > 0}")     
-                                
+        .row
+          .col-md-12
+            form#calForm.form-horizontal(config-for=work._id)              
+              .form-group
+                label.col-sm-4.control-label(for="mode") Mode
+                .col-sm-4
+                  select.form-control(type="text" name="mode")&attributes(work.sampleCount > 0 ? {disabled : 'disabled' } : '')
+                    if work.mode != 'Portrait'
+                      option(value="Random continuous" selected = work.mode == 'Random continuous') Random continuous
+                      option(value="Random lines" selected = work.mode == 'Random lines') Random lines
+                      option(value="Random spots" selected = work.mode == 'Random spots') Random spots
+                    else 
+                      option(selected value="Portrait") Portrait               
+              .form-group
+                label.col-sm-4.control-label(for="width") X distance (inches)
+                .col-sm-4
+                  input.form-control(type="number" min=0 step="0.25" name="width" value=work.width)&attributes(work.sampleCount > 0 ? {disabled : 'disabled' } : '')
+              .form-group
+                label.col-sm-4.control-label(for="height") Y distance (inches)
+                .col-sm-4
+                  input.form-control(type="number" min=0 name="height" step="0.25" value=work.height)&attributes(work.sampleCount > 0 ? {disabled : 'disabled' } : '')
+              .form-group
+                label.col-sm-4.control-label(for="speed") Movement speed (low is fast, 5000 is quick, 15000 is pretty slow)
+                .col-sm-4
+                  input.form-control(type="number" min=0 name="speed" value=work.speed||5000)
+              .form-group
+                label.col-sm-4.control-label(for="speedDispense") Painting speed (low is fast, 5000 is quick, 15000 is pretty slow)
+                .col-sm-4
+                  input.form-control(type="number" min=0 name="speedDispense" value=work.speedDispense||5000)
+              .form-group
+                label.col-sm-4.control-label(for="paintMultiplier") Paint Density (low is less, 50 is a good start)
+                .col-sm-4
+                  input.form-control(type="number" min=0 name="paintMultiplier" value=work.paintMultiplier||50)
+              .form-group
+                label.col-sm-4.control-label(for="redBoost") Red Paint Correction (multiple, 1 is as is, 0.5 is half, 2 is twice, etc)
+                .col-sm-4
+                  input.form-control(type="number" step="0.1" name="redBoost" value=work.redBoost||1)
+              .form-group
+                label.col-sm-4.control-label(for="greenBoost") Green Paint Correction (multiple, 1 is as is, 0.5 is half, 2 is twice, etc)
+                .col-sm-4
+                  input.form-control(type="number" step="0.1" name="greenBoost" value=work.greenBoost||1)
+              .form-group
+                label.col-sm-4.control-label(for="blueBoost") Blue Paint Correction (multiple, 1 is as is, 0.5 is half, 2 is twice, etc)
+                .col-sm-4
+                  input.form-control(type="number" step="0.1" name="blueBoost" value=work.blueBoost||1)
+              .form-group
+                label.col-sm-4.control-label(for="whiteBoost") White Paint Correction (multiple, 1 is as is, 0.5 is half, 2 is twice, etc)
+                .col-sm-4
+                  input.form-control(type="number" step="0.1" name="whiteBoost" value=work.whiteBoost||1)
+              .form-group
+                label.col-sm-4.control-label(for="blackBoost") Black Paint Correction (multiple, 1 is as is, 0.5 is half, 2 is twice, etc)
+                .col-sm-4
+                  input.form-control(type="number" step="0.1" name="blackBoost" value=work.blackBoost||1)
+              .form-group
+                label.col-sm-4.control-label(for="spotSize") Spot Size (inches)
+                .col-sm-4
+                  input.form-control(type="number" step="0.1" name="spotSize" value=work.blackBoost||0.5)
+              .form-group
+                .col-sm-4.col-sm-offset-4
+                  button.save.btn.btn-success(type="submit" config-for=work._id) Save
             
               
       .modal.fade(modal-id="#{work._id}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel")

@@ -2,32 +2,14 @@ var express = require('express');
 var router = express.Router();
 var parser = require('parse-rss');
 var passport = require('passport');
-
 var Sample = require('../models/models.js').Sample;
 var Job = require('../models/models.js').Job;
+var Status = require('../models/models.js').Status;
+var Calibration = require('../models/models.js').Calibration;
+var cleanSlate = require('../models/models.js').cleanSlate;
+var Command = require('../models/models.js').Command;
 
-var color = {
-  red: 255,
-  green: 255,
-  blue: 255
-};
-
-var calibration = {
-  red: 0,
-  green: 0,
-  blue: 0,
-  gain: 0,
-  time: 0,
-  setwhite: 0,
-  reset: function() {
-    this.red = 0;
-    this.green = 0;
-    this.blue = 0;
-    this.gain = 0;
-    this.time = 0;
-    this.setwhite = 0;
-  }
-};
+var currentCommandId = 1;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -47,17 +29,9 @@ router.get('/', function(req, res, next) {
   });
 });
 
-router.get('/colorwall', function(req, res, next) {
-  res.render('colorwall', {
-    title: 'Project MoNET:Colorwall',
-    route: "index"
-  });
-});
-
 router.get('/gallery', function(req, res, next) {
-  res.sendfile('public/gallery/MoNetCanvas.html');
+  res.sendfile('MoNETGallery/MoNetCanvas.html');
 });
-
 
 
 router.get('/colorwall1', function(req, res, next) {
@@ -80,17 +54,93 @@ router.get('/simulator', function(req, res, next) {
 
 router.get('/sample/:red/:green/:blue', function(req, res, next) {
   //console.log(req.params);
-  color = req.params;
+  var color = req.params;
   res.set('Content-Type', 'application/json');
   res.send(calibration);
   calibration.reset();
 });
 
+router.get('/motor/:direction', function(req, res, next) {
+  //console.log(req.params);
+  motor.direction = req.params.direction == 'cw' ? 'ccw' : 'cw';
+  res.set('Content-Type', 'application/json');
+  res.send(motor);
+});
+
 router.get('/color', function(req, res, next) {
-  res.render('color', {
-    title: 'Project MoNET:Color Sampler'
+  Job.getCurrent( function (job) {
+      console.log('got job ', job);
+      var data = {
+        job : job
+      };
+      res.render('color2', {
+        title: 'Project MoNET:Color Sampler', data : data
+      });
   });
 });
+
+/*We're using funky dot notation for incoming messages from the robot. We're just going to stick everything in one request.
+  This will serve three purposes:
+    -give next command to the robot as a response.
+    -mark the previous command as finished
+    -update periodic/emergency status
+*/
+
+            //robotcontol/mowpjf38qe.fetch  .0         .0    .0    .0    .0    .0    .0    .429495  .4294995 .0     .0     .-60    .1
+router.get('/robotcontol/:hardwareID.:action.:commandId.:xPos.:yPos.:xLimMax.:yLimMax.:signal.:status.:reqCount', function(req ,res, next) {
+  console.log(req.params);
+  res.set('Content-Type', 'application/json');
+  if(req.params.hardwareID == "mowpjf38qe") {
+    Status.updateStatus( req.params, function (err, status) {
+      Status.ssUpdate(req.params.commandId);
+      console.log("status.message",status.message);
+
+      if( parseInt(req.params.status) >= 5 &&  parseInt(req.params.status) <= 12 ) {
+        Command.purgePending();
+      }
+
+
+      if( req.params.action == "status") {
+        console.log("got status");
+        res.json({message : "OK"});
+      } else {
+        var completeCommandId = 0;
+        if ( req.params.action == "complete") {
+            completeCommandId = req.params.commandId;
+        }
+        Command.nextCmds(completeCommandId, req.params.xLimMax, req.params.yLimMax, parseInt(req.params.reqCount), function (cmd) {
+          console.log('cmd',JSON.stringify(cmd));
+          Status.ssUpdate(req.params.commandId);
+          res.set('Content-Type', 'application/json');
+          var command = {};
+          if(cmd === null) {
+            console.log("null command");
+            command = { message : 'nothing waiting'};
+          } else {
+            command = cmd;
+          }
+          console.log(JSON.stringify(command));
+          res.json(command);
+
+        });
+      }
+    });
+
+  } else {
+    res.json({ message : "Invalid HardwareID!" });
+  }
+});
+
+router.get('/cmd/:commandId', function(req, res, next) {
+  Command.next(req.params.commandId, function (cmd) {
+    Status.ssUpdate(req.params.commandId);
+    console.log(JSON.stringify(cmd));
+    res.set('Content-Type', 'application/json');
+    if(!cmd) cmd = { message : 'nothing waiting'};
+    res.json(cmd);
+  });
+});
+
 
 router.get('/login', function(req, res, next) {
   res.render('login', {
@@ -123,11 +173,11 @@ var Page = require('../models/models.js').Page;
 //Private stuff, don't read or the app will break!
 router.get('/private/:dest', function(req, res, next) {
   console.log(req.params.dest);
-  if (req.user) {
-    if (req.user.elevated || req.user.owner) {
+  if ( !process.env.OPENSHIFT_MONGODB_DB_PASSWORD || req.user ) {
+    if ( !process.env.OPENSHIFT_MONGODB_DB_PASSWORD || req.user.elevated || req.user.owner ) {
       switch (req.params.dest) {
 
-        case "users":
+          case "users":
           User.find().exec(function(err, users) {
             res.render("users", {
               title: 'Project MoNET:User Management',
@@ -137,7 +187,7 @@ router.get('/private/:dest', function(req, res, next) {
           break;
 
 
-        case "frontpage":
+          case "frontpage":
           Page.findOne().exec(function(err, page) {
             res.render("frontpage", {
               title: 'Project MoNET:Front Page Editor',
@@ -146,13 +196,31 @@ router.get('/private/:dest', function(req, res, next) {
           });
           break;
 
-        case "works":
+          case "works":
           page = req.query.page || 0;
           Job.get(5, page, function(err, works) {
             res.render("works", {
               title: 'Project MoNET:Work Control',
               works: works
             });
+          });
+          break;
+
+          case "clean_slate":
+          cleanSlate( function () {
+            res.redirect('/');
+          });
+          break;
+
+          case "portrait":
+          res.render('points', {
+            title: 'Project MoNET:Portrait Creator'
+          });
+          break;
+
+          case "monitor":
+          res.render('monitor', {
+            title: 'Project MoNET:Robot Monitor'
           });
           break;
 
@@ -175,8 +243,8 @@ router.get('/private/:dest', function(req, res, next) {
 
 //For updating admin stuff
 router.put('/private/:dest', function(req, res, next) {
-  if (req.user) {
-    if (req.user.elevated || req.user.owner) {
+  if ( !process.env.OPENSHIFT_MONGODB_DB_PASSWORD || req.user) {
+    if ( !process.env.OPENSHIFT_MONGODB_DB_PASSWORD || req.user.elevated || req.user.owner) {
       var data = req.body;
 
       switch (req.params.dest) {
@@ -185,7 +253,7 @@ router.put('/private/:dest', function(req, res, next) {
           User.update(data, function(status) {
             res.send({
               result: status
-            })
+            });
           });
           break;
 

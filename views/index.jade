@@ -19,31 +19,27 @@ block content
       .col-md-2
   
     .row
-      .col-md-2
-      .col-md-8.content
+      .col-md-8.col-md-offset-2.content
         .row
           .col-md-8(style= "margin-top: 60px")!= page.monet
           .col-md-4.text-center
             img.circle-up(src="images/claude_monet.jpg")
-      .col-md-2
 
     .row.med-orange
       #how-target
-      .col-md-2
-      .col-md-8.content
+      .col-md-8.col-md-offset-2.content
         h1 how it works
         .holder!= page.works
-      .col-md-2
+    
     
     #color-wall.row
       #color-wall-target
-      .col-md-2
-      .col-md-8.content.colorwall
-        img.header(src="images/colorwall.png")
+      .col-md-8.col-md-offset-2.content.colorwall
+        img.header(src="images/color_sampler.png")
         .holder!= page.colorwall
         .text-center
-          a.btn.btn-info.btn-lg.text-center(href="colorwall1") Check it out!
-      .col-md-2
+          a.btn.btn-info.btn-lg.text-center(href="color") Start Sampling!
+  
     //-
       #team.row
         #team-target
@@ -68,35 +64,34 @@ block content
     if latest  
       #blog.row.light-orange
         #blog-target
-        .col-md-2
-        .col-md-8.content
+        .col-md-8.col-md-offset-2.content
           h2 latest blog post
           h1= latest.title
           p.blogcontent #{latest.summary} <a href="#{latest.url}"> ... read more</a>
           p.smaller Posted by #{latest.author} #{latest.time_ago} in the <a href="http://blog.projectmo.net">Project MoNET Blog</a>
-        .col-md-2      
 
     #contact.row.inverse
       #social-target
-      .col-md-2
-      .col-md-8.content
+      .col-md-8.col-md-offset-2.content
         h1 be social
-        .holder!= page.social
+        #social.holder!= page.social
         .row
         .col-md-4.social-links
           a(href="https://www.facebook.com/projectmonet/")
             i.fa.fa-facebook-square 
-            |  Facebook        
+            b  Facebook        
         .col-md-4.social-links
           a(href="https://twitter.com/robomonet")
             i.fa.fa-twitter-square 
-            |  Twitter          
+            b  Twitter          
         .col-md-4.social-links
-            a(href="https://github.com/LikeClockwork/MoNET")
-              i.fa.fa-github-square 
-              |  GitHub
-      .col-md-2     
-                      
+          a(href="https://github.com/LikeClockwork/MoNET")
+            i.fa.fa-github-square 
+            b  GitHub
+      #contact2.row.inverse
+        #contactus-target
+        .col-md-8.col-md-offset-2.content
+          #contactus!= page.contactus                      
   include js.jade
   script(src="/javascripts/index.js")
   

@@ -1,0 +1,52 @@
+extends layout
+
+block content
+  .site-wrapper.monetize-control-panel.controls(style = "display : none")
+    .site-wrapper-inner
+      p.text-center
+        canvas#canvas(style=" height: 520px; width: 400px")
+      .cover-container
+        .inner-cover.controls#image-controls
+          p Set the canvas size and image size using the sliders below. You may drag the image to align it how you want on the canvas.
+          p#canvas-width Canvas Width 96"
+          p
+            #slider-xsize
+          p#canvas-height Canvas Height 48"
+          p
+            #slider-ysize
+          p#pic-size Picture Size 100%
+          p
+            #slider-picsize
+          p#pic-rotate Picture Rotation 0&deg;
+          p
+            #slider-rotate
+          p.text-center
+            button.btn-large#monetize MoNETize!
+        .inner-cover#processing(style = "display:none")
+          H1.controls 
+            span
+              i.fa.fa-cog.fa-spin.fa-fw.fa-1x
+              span Processing ...
+
+
+
+  .site-wrapper#splash
+    .site-wrapper-inner
+      .cover-container
+        .inner.cover.text-center      
+          img(src="/images/color_sampler.png")
+          h2#message.normal This page allows you to take or upload a picture and convert it into a paint map for the robot.
+          p#add-cell.normal(style="display:none")
+          label#file-holder.btn.btn-lg.btn-file.btn-info.normal
+            span Get a Picture
+            input.btn.btn-default#camera(type='file' accept='image/*' capture='camera' style="display:none" data-maxwidth="360" data-maxheight="480")
+    #preview(style="display:none")
+
+
+  include js.jade
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.10.2/paper-full.min.js")
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/async/2.0.1/async.min.js")
+  script(src="/socket.io/socket.io.js")
+  script(src="/javascripts/points.js")
+  script(src="https://code.jquery.com/ui/1.12.1/jquery-ui.js")
+  

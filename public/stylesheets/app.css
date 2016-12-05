@@ -1,5 +1,28 @@
+@font-face {
+    font-family: 'montserratextralight';
+    src: url('montserrat-extralight-webfont.woff2') format('woff2'),
+         url('montserrat-extralight-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'montserratlight';
+    src: url('montserrat-light-webfont.woff2') format('woff2'),
+         url('montserrat-light-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+
+
 body {
-  font-family: 'Montserrat', sans-serif; }
+  font-family: 'montserratextralight', sans-serif; }
+
+h1,h2,h3,h4,h5,h6 {
+  font-family: 'montserratlight', sans-serif;
+}
 
 #nav-logo {
   height: 100px;
@@ -81,7 +104,7 @@ div.colorsplotch {
   text-shadow: white 0 0 15px; }
 
 .colorwall {
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.75);
   padding: 20px; }
 
 .colorwall img {
@@ -184,3 +207,53 @@ a:hover {
 
 .in-small {
   width: 100%; }
+
+#status-bar {
+  padding-bottom: 0.1em;
+  padding-top: 0.2em;
+}
+
+#wifi-icons {
+  width: 100%;
+  display: inline-block;;
+}
+
+.pos-holder {
+  font-size:400%;
+}
+
+.pos-header {
+  padding-top: 5%;
+}
+
+.sidebar {
+  font-size:66%;
+}
+
+.splotch.first {
+  border: 3px solid #333;
+  border-width: 3px 3px 0 3px;
+}
+
+.splotch.middle {
+  border: 3px solid #333;
+  border-width: 0 3px 0 3px;
+}
+
+.splotch.last {
+  border: 3px solid #333;
+  border-width: 0 3px 3px 3px;
+}
+
+.color-chan-label {
+  text-align: right;
+}
+
+
+.controls {
+  color : #333;
+}
+
+.controls canvas {
+  border: 2px solid #333;
+}
