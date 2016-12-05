@@ -1,26 +1,30 @@
-
+  //Determine if being tested locatlly or if it's on live site so it socket.io behaves.
   if(window.location.href.indexOf("192") > -1) {
     var socket = io();
   } else {
     var socket = io('http://www.projectmo.net:8000');
   }
 
-
+//Wait for document to be loaded.
 $(document).ready(function() {
 
+  //Set up all needed variables.
   var color;
 
+  //Short cuts for various file upload form elements
   var fileinput = document.getElementById('camera');
+  var preview = document.getElementById('preview');
+  var form = document.getElementById('file-holder');
 
+  //Get allowed size of uploaded image.
   var max_width = fileinput.getAttribute('data-maxwidth');
   var max_height = fileinput.getAttribute('data-maxheight');
 
-  var preview = document.getElementById('preview');
 
-  var form = document.getElementById('file-holder');
-
+  //Function to process file
   function processfile(file) {
 
+    //Check if uploaded file is an allowed image type.
     if (!(/image/i).test(file.type)) {
       alert("File " + file.name + " is not an image.");
       return false;
@@ -36,13 +40,15 @@ $(document).ready(function() {
       window.URL = window.URL || window.webkitURL;
       var blobURL = window.URL.createObjectURL(blob); // and get it's URL
 
-      // helper Image object
+      // helper Image object . . . load uploaded file into this for image analysis
       var image = new Image();
       image.src = blobURL;
-      preview.appendChild(image); // preview commented out, I am using the canvas instead
+      preview.appendChild(image);
+
+      //Once image is loaded, hand off to Paper.js for analysis.
       image.onload = function() {
+        //Get our canvas element and make it a Paper.js project.
         var canvas = document.getElementById('canvas');
-    		// Create an empty project and a view for the canvas:
     		paper.setup(canvas);
 
         var raster = new paper.Raster({source: image.src});
@@ -54,13 +60,11 @@ $(document).ready(function() {
           // calculate the width and height, constraining the proportions
           if (width > height) {
             if (width > max_width) {
-              //height *= max_width / width;
               height = Math.round(height *= max_width / width);
               width = max_width;
             }
           } else {
             if (height > max_height) {
-              //width *= max_height / height;
               width = Math.round(width *= max_height / height);
               height = max_height;
             }
@@ -68,7 +72,11 @@ $(document).ready(function() {
 
           raster.height = height;
           raster.width = width;
+
+          //Position the image correctly.
           raster.position = new paper.Point(width/2,height/2);
+
+          //Create a rectangle over the image, then take the average color of the rectangle.
           var rect = new paper.Rectangle(0,0,width,height);
           var avgColor = raster.getAverageColor(rect);
 
@@ -76,10 +84,13 @@ $(document).ready(function() {
 
           var rgb = {};
 
+          //Break out the compenent colors from the average color
           rgb.red = parseInt(avgColor.components[0] * 255);
           rgb.green = parseInt(avgColor.components[1] * 255);
           rgb.blue = parseInt(avgColor.components[2] * 255);
 
+
+          //Apply average color to page background.
           $('body').css("background-color", "rgb(" + rgb.red + "," + rgb.green + "," + rgb.blue + ")");
           $('#message').html("Great! If you like your color, add it to the wall. If not choose or take a new picture.");
           $('#add-cell').show();
@@ -108,8 +119,8 @@ $(document).ready(function() {
     };
   }
 
+  //Read file and pass over to process function.
   function readfiles(files) {
-
     // remove the existing canvases and hidden inputs if user re-selects new pics
     var existinginputs = document.getElementsByName('images[]');
     var existingcanvases = document.getElementsByTagName('canvas');
@@ -138,7 +149,7 @@ $(document).ready(function() {
     readfiles(fileinput.files);
   };
 
-
+  //Once the file is processed and color sampled, the user can add it to robot's queue. This fires off a socket.io event.
   $('#add').click(function() {
     console.log(color);
     socket.emit('new color', color);
