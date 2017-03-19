@@ -1,36 +1,12 @@
-$(document).ready(function() {
-
-  tinymce.init({
-    selector: '#subtitle',
-    inline: true,
-    plugins: "link",
-  });
-  tinymce.init({
-    selector: '#monet',
-    inline: true,
-    plugins: "link",
-  });
-  tinymce.init({
-    selector: '#works',
-    inline: true,
-    plugins: "link",
-  });
-  tinymce.init({
-    selector: '#social',
-    inline: true,
-    plugins: "link",
-  });
-  tinymce.init({
-    selector: '#colorwall',
-    inline: true,
-    plugins: "link",
-  });
-  tinymce.init({
-    selector: '#contactus',
-    inline: true,
-    plugins: "link",
-  });
-
+$(document).ready(function () {
+    var selector = new Array("#subtitle", "#monet", "#works", "#social", "#colorwall", "#contactus");
+    for (var i = 0; i < selector.length; i++) {
+        tinymce.init({
+                inline: true,
+                plugins: "link"
+            });
+    }
+ 
   $('#save').click(function(e) {
     e.preventDefault;
     var button = $(this);

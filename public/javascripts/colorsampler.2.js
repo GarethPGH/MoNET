@@ -1,5 +1,7 @@
-  //Determine if being tested locatlly or if it's on live site so it socket.io behaves.
-  if(window.location.href.indexOf("192") > -1) {
+  //Determine if being tested localy or if it's on live site so socket.io behaves.
+if (window.location.href.indexOf("192") > -1) {
+    var windex = window.location.href.indexOf("192");
+    console.log(windex);
     var socket = io();
   } else {
     var socket = io('http://www.projectmo.net:8000');
@@ -80,7 +82,6 @@ $(document).ready(function() {
           var rect = new paper.Rectangle(0,0,width,height);
           var avgColor = raster.getAverageColor(rect);
 
-          //console.log(avgColor);
 
           var rgb = {};
 
@@ -105,15 +106,6 @@ $(document).ready(function() {
 
         });
 
-    		// Draw the view now:
-    		//paper.view.draw();
-        // have to wait till it's loaded
-        //var resized = resizeMe(image); // send it to canvas
-        //var newinput = document.createElement("input");
-        //newinput.type = 'hidden';
-        //newinput.name = 'images[]';
-        //newinput.value = resized; // put result from canvas into new hidden input
-        //form.appendChild(newinput);
 
       };
     };
