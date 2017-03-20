@@ -1,0 +1,19 @@
+﻿{
+"type": "object",
+
+  "properties": {
+
+  "Piece Name": "array",
+  "Piece ID" : "number"
+  "coordinate"{
+    "color" : "string",
+    "position x" : "number",
+    "position y" : "number"
+  }
+
+    }
+  }
+
+//create a test JSON objects to see if they will show up in the canvas,
+//find a decent res grid for color placement. Have this centered in the canvas.
+//color will be in rgb or hex

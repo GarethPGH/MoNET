@@ -1,36 +1,28 @@
-﻿//load dummy icons into thumbnails Make thumbnails viewable in painting
+﻿"use strict";
 
-document.addEventListener("DOMContentLoaded", function (event) {
 
-console.log('Hellow there');
+var imgs = ["attractivearrow.png", "attractivearrow2.png", "attractivearrowr.png", "attractivearrowr2.png", "bird.png", "bird2.png", "birdwithhat.png", "birdwithmonocle.png", "birdwithmonocle2.png", "gallerytitle.png", "gallerytitle2.png", "gallerytitlebanner.png", "gallerytitlebanner2.png", "hero_logo_headsmall.png", "hero_logo_headsmall2.png", "hero_logo_words.png", "labels.png", "sillyraccoon.png", "sillyraccoon2.png", "yellowfrog.png", "yellowfrog2.png"];
 
-var thumbs = document.getElementsByClassName("thumbnails");
-
-    for (var i = 0; i < thumbs.length; i++) {
-        thumbs[i].innerHTML = "<img src = 'Images/birdwithmonocle.png', height = '100', width = '75' >";
+    function loadMyFnThumbnails() {
+    
+        var thumbs = document.getElementsByClassName("thumbnails");
+        for (var i = thumbs.length - 1; i >= 0; --i) {
+            thumbs[i].addEventListener("click", changeImage);
+        }
        
-    }
-    for (var i = 0; i < thumbs.length; i++) {
-        thumbs[i].innerHTML = "<img src = 'Images/birdwithhat.png', height = '100', width = '75' >";
-        i=i + 1;
-    }
-    for (var i = 0; i < thumbs.length; i++) {
-        thumbs[i].innerHTML = "<img src = 'Images/bird.png', height = '100', width = '75' >";
-        i = i + 2;
-    }
-   
-});
 
-var clicked = document.getElementsByClassName("thumbnails");
+        for (var index = thumbs.length - 1; index >= 0; --index) {
+            
 
-clicked.addEventListener("click", function (event) {
+            if (thumbs[index].children.length > 0) {
 
-    var paintSource = document.getElementById("Painting");
-    paintSource.src = clicked.innerHTML();
-});
+                var thumbnailImg = thumbs[index];
+                thumbnailImg.firstElementChild.setAttribute("src", "/public/images/" + imgs[index]);
+                
+              
+            };
+            
+        };
+      
+    };
 
-//load thumbnails dynamically from a DB of images from MoNET bot.
-//if thumbs >12 initialize new page of twelve thumbnails
-//activate next/prev arrows
-//check if page=1, set prev to hidden
-//check if page = thumbs.size, set next to hidden

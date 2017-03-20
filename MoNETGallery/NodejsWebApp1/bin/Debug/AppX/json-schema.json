@@ -1,0 +1,23 @@
+﻿{
+"type": "object",
+
+  "properties": {
+    //I want a number of these to be in the format "Piece Name"{["color: red, position:4, 3"], ["color:blue, position: 2 ,4"] ....}
+    //set var "Piece Name"= new instance of JSON object in the business logic as an array of positions and assigned colors fed in from the camera.
+    "color": {
+      "type": "string",
+      "description": "This is a hex value for the selected color."
+    },
+    "position": {
+      "type": "array",
+      "description": "X and Y grid coordinates of where the bot will place selected color",
+      "minItems": 2,
+      "items": {
+        "type": "number"
+      }
+    }
+  }
+}
+//create a test JSON objects to see if they will show up in the canvas,
+//find a decent res grid for color placement. Have this centered in the canvas.
+
