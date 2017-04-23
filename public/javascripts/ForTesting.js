@@ -69,7 +69,7 @@ function processImage(){
 
 
     });
-    //Put this bitch in a promise
+    //Put this in a promise
     function processfile(file) {
 
         //Check if uploaded file is an allowed image type.
